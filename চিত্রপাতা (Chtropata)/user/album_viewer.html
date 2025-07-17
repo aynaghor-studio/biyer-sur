@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wedding Album Viewer</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Flowbite -->
+  <script src="https://unpkg.com/flowbite@latest/dist/flowbite.js"></script>
+  <!-- Turn.js for page flip -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+  <!-- HTML5 QR code -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Merriweather', serif; background-color: #FFF1E6; }
+    .album-page { width: 400px; height: 300px; overflow: hidden; }
+    #flipbook { width: 800px; height: 300px; margin: auto; }
+    .modal { display: none; }
+  </style>
+</head>
+<body class="text-[#333333]">
+
+  <!-- Navbar -->
+  <nav class="bg-[#E07A5F] text-[#FFF1E6] px-4 py-3">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold">Wedding Albums</h1>
+      <button onclick="startQR()" class="bg-[#FFF1E6] text-[#E07A5F] px-4 py-1 rounded hover:bg-[#81B29A] hover:text-white">
+        Scan QR Code
+      </button>
+    </div>
+  </nav>
+
+  <!-- Album ID Input -->
+  <div class="max-w-xl mx-auto my-6 px-4">
+    <label class="block text-lg font-semibold mb-2">Enter Album ID</label>
+    <div class="flex">
+      <input type="text" id="albumInput" class="flex-1 p-2 border rounded-l" placeholder="e.g., A001">
+      <button onclick="fetchAlbum()" class="bg-[#E07A5F] text-[#FFF1E6] px-4 rounded-r hover:bg-[#81B29A]">
+        View
+      </button>
+    </div>
+  </div>
+
+  <!-- Prompt Label -->
+  <div id="statusMessage" class="text-center text-[#888888] font-medium my-4">
+    Please scan a QR code or enter an Album ID to view the wedding album.
+  </div>
+
+  <!-- QR Code Reader -->
+  <div id="qr-reader" class="max-w-md mx-auto my-4 hidden"></div>
+
+  <!-- Album Info Modal -->
+  <div id="albumModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center modal">
+    <div class="bg-white p-6 rounded shadow-lg max-w-md">
+      <h2 class="text-xl font-bold">Album Information</h2>
+      <p id="albumDetails" class="mt-2 text-[#888888]">Loading...</p>
+      <button onclick="closeModal()" class="mt-4 bg-[#E07A5F] text-[#FFF1E6] px-4 py-2 rounded hover:bg-[#81B29A]">Close</button>
+    </div>
+  </div>
+
+  <!-- Album Flipbook -->
+  <div id="flipbook" class="my-10 hidden"></div>
+
+  <script>
+    const SHEET_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec'; // replace this
+
+    function showModal(info) {
+      document.getElementById('albumDetails').innerText = info;
+      document.getElementById('albumModal').classList.remove('modal');
+    }
+
+    function closeModal() {
+      document.getElementById('albumModal').classList.add('modal');
+    }
+
+    function startQR() {
+      const qrDiv = document.getElementById("qr-reader");
+      qrDiv.classList.remove("hidden");
+
+      const qrScanner = new Html5Qrcode("qr-reader");
+
+      qrScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (text) => {
+          qrScanner.stop();
+          qrDiv.classList.add("hidden");
+          document.getElementById("albumInput").value = text;
+          fetchAlbum(text);
+        },
+        (err) => {}
+      );
+    }
+
+    function fetchAlbum(inputValue) {
+      const albumId = inputValue || document.getElementById('albumInput').value.trim();
+      if (!albumId) return;
+
+      fetch(SHEET_URL)
+        .then(res => res.json())
+        .then(data => {
+          const album = data.find(row => row['Album ID'] === albumId);
+          if (!album) {
+            alert("Album not found. Please check the ID or scan again.");
+            document.getElementById("statusMessage").innerText = "Album not found. Try scanning a QR code or entering a valid Album ID.";
+            return;
+          }
+
+          const info = `Studio: ${album['Studio Name']}\nBride & Groom: ${album['Bride & Groom']}`;
+          showModal(info);
+          document.getElementById("statusMessage").innerText = "";
+
+          const images = album['Image URLs'].split(',').map(url => url.trim());
+          const flipbook = document.getElementById('flipbook');
+          flipbook.innerHTML = '';
+          flipbook.classList.remove('hidden');
+
+          flipbook.appendChild(createPage("Cover"));
+          images.forEach(url => {
+            const page = createPage(`<img src="${url}" class="w-full h-full object-cover" />`);
+            flipbook.appendChild(page);
+          });
+          flipbook.appendChild(createPage("Back Cover"));
+
+          setTimeout(() => {
+            if ($("#flipbook").data("turn")) $("#flipbook").turn("destroy");
+            $("#flipbook").turn({ width: 800, height: 300, autoCenter: true });
+          }, 100);
+        });
+    }
+
+    function createPage(content) {
+      const page = document.createElement('div');
+      page.className = 'album-page bg-white rounded shadow';
+      page.innerHTML = content;
+      return page;
+    }
+
+    function checkURLParams() {
+      const params = new URLSearchParams(window.location.search);
+      const albumId = params.get("album");
+      if (albumId) {
+        document.getElementById("albumInput").value = albumId;
+        fetchAlbum(albumId);
+      }
+    }
+
+    window.onload = checkURLParams;
+  </script>
+</body>
+</html>

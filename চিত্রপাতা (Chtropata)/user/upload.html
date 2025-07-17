@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upload Album Images - চিত্রপাতা</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body { font-family: 'Playfair Display', serif; background-color: #FFF1E6; color: #333333; }
+    .drop-zone {
+      border: 3px dashed #E07A5F;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(224, 122, 95, 0.2);
+    }
+    .drop-zone.dragover {
+      background-color: #FFF1E6;
+      border-color: #81B29A;
+      box-shadow: 0 6px 10px rgba(129, 178, 154, 0.4);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+<div class="max-w-3xl mx-auto p-8">
+  <h1 class="text-3xl font-bold mb-6" style="color:#E07A5F;">Upload Album Images</h1>
+
+  <form id="uploadForm" class="space-y-6 bg-white p-6 rounded-lg shadow-lg border border-yellow-200">
+
+    <div>
+      <label for="studioName" class="block font-semibold mb-1">Studio Name (Auto Loaded)</label>
+      <input id="studioName" name="studioName" type="text" readonly
+        class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed" />
+    </div>
+
+    <div>
+      <label for="brideGroomName" class="block font-semibold mb-1">Bride & Groom Name <span class="text-red-600">*</span></label>
+      <input id="brideGroomName" name="brideGroomName" type="text" placeholder="Enter Bride & Groom Name" required
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#81B29A]" />
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <p class="text-gray-500 mb-2">Drag & drop images here, or click to select</p>
+      <input type="file" id="fileInput" name="images" accept="image/*" multiple class="hidden" />
+      <div id="fileList" class="text-sm text-gray-600"></div>
+    </div>
+
+    <progress id="uploadProgress" max="100" value="0" class="w-full rounded mb-2 hidden"></progress>
+
+    <button type="submit" disabled id="uploadBtn" class="bg-[#E07A5F] text-[#FFF1E6] font-bold py-2 px-4 rounded-md shadow-md hover:bg-[#81B29A] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed">
+      Upload Images
+    </button>
+
+  </form>
+
+  <div id="resultSection" class="mt-8 hidden bg-white p-6 rounded-lg shadow-lg border border-yellow-200">
+    <h2 class="text-2xl font-bold mb-4" style="color:#E07A5F;">Album Uploaded Successfully!</h2>
+    <p class="mb-3"><strong>Album ID:</strong> <span id="albumIdDisplay"></span></p>
+    <p class="mb-3">
+      <strong>Album URL:</strong> <a href="#" id="albumUrl" target="_blank" class="text-[#81B29A] underline"></a>
+      <button id="copyLinkBtn" class="ml-3 px-3 py-1 bg-[#E07A5F] text-[#FFF1E6] rounded hover:bg-[#81B29A] hover:text-white transition">Copy Link</button>
+    </p>
+    <canvas id="qrCodeCanvas"></canvas>
+  </div>
+</div>
+
+<script>
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const fileList = document.getElementById('fileList');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const uploadForm = document.getElementById('uploadForm');
+  const uploadProgress = document.getElementById('uploadProgress');
+  const resultSection = document.getElementById('resultSection');
+  const albumIdDisplay = document.getElementById('albumIdDisplay');
+  const albumUrl = document.getElementById('albumUrl');
+  const copyLinkBtn = document.getElementById('copyLinkBtn');
+  const studioNameInput = document.getElementById('studioName');
+  const brideGroomNameInput = document.getElementById('brideGroomName');
+
+  let filesToUpload = [];
+
+  // Load studio name from localStorage
+  const studioName = localStorage.getItem('studioLabel') || '';
+  studioNameInput.value = studioName;
+
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    addFiles(e.dataTransfer.files);
+  });
+
+  fileInput.addEventListener('change', (e) => addFiles(e.target.files));
+
+  function addFiles(selectedFiles) {
+    for (const file of selectedFiles) {
+      if (!file.type.startsWith('image/')) continue;
+      filesToUpload.push(file);
+    }
+    updateFileList();
+  }
+
+  function updateFileList() {
+    if (filesToUpload.length === 0) {
+      fileList.textContent = 'No files selected';
+      uploadBtn.disabled = true;
+    } else {
+      fileList.textContent = filesToUpload.map(f => f.name).join(', ');
+      uploadBtn.disabled = false;
+    }
+  }
+
+  // Helper: generate random alphanumeric album ID
+  function generateAlbumId(length = 8) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  uploadForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!brideGroomNameInput.value.trim()) {
+      alert('Please enter the Bride & Groom name');
+      brideGroomNameInput.focus();
+      return;
+    }
+
+    if (filesToUpload.length === 0) {
+      alert('Please select at least one image to upload');
+      return;
+    }
+
+    uploadBtn.disabled = true;
+    uploadProgress.value = 0;
+    uploadProgress.classList.remove('hidden');
+    resultSection.classList.add('hidden');
+
+    // Generate album ID
+    const albumId = generateAlbumId();
+
+    // Prepare data to send to Google Apps Script
+    // We'll upload images as base64 strings, but for real big uploads,
+    // a better backend or Drive API token approach needed.
+    // For demo: send metadata + urls only and upload images manually to Drive.
+
+    // Here, simulate uploading images by creating "fake" URLs (or you may integrate Drive API upload).
+    // We’ll just send filenames as placeholder URLs in Google Sheet.
+
+    // In production, images should be uploaded to Drive under folder named after brideGroomName,
+    // and URLs recorded in sheet.
+
+    // Compose data payload
+    const imageUrls = filesToUpload.map(f => `images/${f.name}`);
+
+    const payload = {
+      albumId,
+      studioName,
+      brideGroomName: brideGroomNameInput.value.trim(),
+      designerStudioName: studioName,
+      imageUrls,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      // Send POST request to Google Apps Script URL
+      const res = await fetch('YOUR_GOOGLE_SCRIPT_UPLOAD_SCRIPT_URL', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        albumIdDisplay.textContent = albumId;
+        const albumPageUrl = result.albumUrl; // generated by script
+        albumUrl.href = albumPageUrl;
+        albumUrl.textContent = albumPageUrl;
+
+        // Generate QR Code
+        QRCode.toCanvas(document.getElementById('qrCodeCanvas'), albumPageUrl, { width: 180 }, function (error) {
+          if (error) console.error(error);
+        });
+
+        resultSection.classList.remove('hidden');
+      } else {
+        alert('Upload failed: ' + (result.message || 'Unknown error'));
+      }
+
+    } catch (err) {
+      alert('Error uploading album: ' + err.message);
+      console.error(err);
+    }
+
+    uploadProgress.classList.add('hidden');
+    uploadBtn.disabled = false;
+  });
+
+  // Copy album URL button
+  copyLinkBtn.addEventListener('click', () => {
+    const url = albumUrl.href;
+    navigator.clipboard.writeText(url).then(() => {
+      alert('Album URL copied to clipboard!');
+    });
+  });
+
+  updateFileList();
+
+</script>
+
+</body>
+</html>

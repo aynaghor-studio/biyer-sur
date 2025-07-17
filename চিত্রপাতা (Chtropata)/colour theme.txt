@@ -1,0 +1,49 @@
+1. Primary Colors
+Color Name	Hex Code	Usage Example	
+Terracotta	#E07A5F	Buttons, Headers, Active Menu Items	
+Cream White	#FFF1E6	Background, Cards, Section Backgrounds	
+Olive Green	#81B29A	Button Hover, Accent Elements, Links	
+Charcoal	#333333	Primary Text, Titles	
+Warm Gray	#888888	Secondary Text, Subheadings, Captions
+
+2. Typography
+Headers & Titles:
+Font Family: Playfair Display or Merriweather (serif fonts)
+Color: Charcoal (#333333)
+Weight: 700 (bold)
+
+3. Buttons
+Primary Button:
+Background: Terracotta (#E07A5F)
+Text: Cream White (#FFF1E6)
+Border Radius: 6px
+Box Shadow: subtle shadow for depth
+Hover State: Olive Green (#81B29A) background, white text
+
+4. Backgrounds
+Main Background: Cream White (#FFF1E6) for a soft paper-like feel.
+
+Sections: Alternate with subtle Terracotta (#E07A5F) overlays at 10-15% opacity for warmth.
+
+Cards/Albums: White or very light cream with soft shadows to mimic physical album pages.
+
+5. Navbar/Header
+Background: Solid Terracotta (#E07A5F)
+
+Text: Cream White (#FFF1E6)
+
+Hover underline: Olive Green (#81B29A)
+
+6. Image Frames / Album Cards
+Border Radius: 8px
+
+Box Shadow: soft shadow in Terracotta or Olive Green tints
+
+Hover effect: slight scale-up with subtle shadow intensification
+
+7. Additional Style
+Page Flip Animation: For album viewing, subtle page-turn effect with a cream background and terracotta shadows.
+
+Icons: Use Olive Green for active icons/buttons.
+
+Links: Olive Green, underline on hover with terracotta highlight.

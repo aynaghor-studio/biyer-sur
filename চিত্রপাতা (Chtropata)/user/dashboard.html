@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>চিত্রপাতা Studio Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/flowbite@2.2.1/dist/flowbite.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #FFF1E6;
+      font-family: 'Playfair Display', serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- Navbar -->
+  <nav class="bg-[#E07A5F] p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-[#FFF1E6] text-2xl font-bold tracking-wider">চিত্রপাতা</h1>
+      <ul class="flex gap-6 text-[#FFF1E6] font-medium">
+        <li class="hover:underline hover:text-[#81B29A] cursor-pointer">Dashboard</li>
+        <li class="hover:underline hover:text-[#81B29A] cursor-pointer">Albums</li>
+        <li class="hover:underline hover:text-[#81B29A] cursor-pointer">Analytics</li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Dashboard Cards -->
+  <main class="py-12 px-6 flex-grow">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- Upload Images Card -->
+      <div class="bg-white shadow-md hover:shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 border border-[#E07A5F]/20">
+        <h2 class="text-[#333333] text-xl font-bold mb-2">📤 Upload Images</h2>
+        <p class="text-[#888888] mb-4">Easily upload your album images with an intuitive interface. Organized, efficient, and seamless experience.</p>
+        <button class="bg-[#E07A5F] hover:bg-[#81B29A] text-[#FFF1E6] px-4 py-2 rounded-md shadow-sm transition-colors">
+          Go to Upload
+        </button>
+      </div>
+
+      <!-- Get Album ID Card -->
+      <div class="bg-white shadow-md hover:shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 border border-[#E07A5F]/20">
+        <h2 class="text-[#333333] text-xl font-bold mb-2">🆔 Get Album ID</h2>
+        <p class="text-[#888888] mb-4">Generate or retrieve a unique Album ID for easy sharing and future reference. Every album is uniquely identified.</p>
+        <button class="bg-[#E07A5F] hover:bg-[#81B29A] text-[#FFF1E6] px-4 py-2 rounded-md shadow-sm transition-colors">
+          Generate ID
+        </button>
+      </div>
+
+      <!-- Viewer Analysis Card -->
+      <div class="bg-white shadow-md hover:shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 border border-[#E07A5F]/20">
+        <h2 class="text-[#333333] text-xl font-bold mb-2">📊 Analysis</h2>
+        <p class="text-[#888888] mb-4">Track how many views each album receives. Gain insight into engagement with visual charts and simple stats.</p>
+        <button class="bg-[#E07A5F] hover:bg-[#81B29A] text-[#FFF1E6] px-4 py-2 rounded-md shadow-sm transition-colors">
+          View Insights
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#E07A5F] text-[#FFF1E6] py-6">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p>&copy; 2025 চিত্রপাতা. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
