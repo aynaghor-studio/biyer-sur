@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - সোনার ফ্রেম</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+  <style>
+    :root {
+      --primary-gold: #c9a341;
+      --secondary-gold: #8a6e3b;
+      --background: #faf8f1;
+      --text-dark: #242423;
+      --text-light: #3f3f3f;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text-dark);
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-center">
+      <div class="text-2xl font-bold text-[var(--primary-gold)] select-none cursor-default">সোনার ফ্রেম</div>
+    </div>
+  </nav>
+
+  <!-- Login Section -->
+  <section class="flex-grow flex flex-col justify-center items-center px-6 py-20 max-w-md mx-auto" data-aos="fade-up">
+    <h1 class="text-4xl font-extrabold text-[var(--primary-gold)] mb-10 select-text">Login to সোনার ফ্রেম</h1>
+
+    <form id="loginForm" class="w-full bg-white p-8 rounded-lg shadow-lg" novalidate>
+      <label for="email" class="block text-[var(--text-dark)] font-semibold mb-2">Email</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        required
+        placeholder="you@example.com"
+        class="w-full border border-gray-300 rounded-md px-4 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]"
+      />
+
+      <label for="password" class="block text-[var(--text-dark)] font-semibold mb-2">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        required
+        placeholder="••••••••"
+        class="w-full border border-gray-300 rounded-md px-4 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]"
+      />
+
+      <button
+        type="submit"
+        class="w-full bg-[var(--primary-gold)] text-white font-bold py-3 rounded-md hover:bg-[var(--secondary-gold)] transition mb-4"
+      >
+        Log In
+      </button>
+
+      <a href="../index.html" class="block text-center bg-[var(--secondary-gold)] text-white font-semibold py-3 rounded-md hover:bg-[var(--primary-gold)] transition">
+        Home
+      </a>
+
+      <p id="message" class="mt-4 text-center text-red-600 font-semibold"></p>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-[var(--primary-gold)] text-white py-6 text-center select-none">
+    <p>© 2025 সোনার ফ্রেম. All rights reserved.</p>
+  </footer>
+
+  <script>
+    AOS.init({
+      duration: 700,
+      easing: 'ease-in-out',
+      once: true,
+    });
+
+    // Example simple login with Google Apps Script Web App
+    // Replace YOUR_DEPLOYMENT_ID with your Apps Script Web App URL
+    const loginForm = document.getElementById('loginForm');
+    const messageEl = document.getElementById('message');
+
+    loginForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      messageEl.textContent = '';
+
+      const email = loginForm.email.value.trim();
+      const password = loginForm.password.value.trim();
+
+      if (!email || !password) {
+        messageEl.textContent = 'Please fill in all fields.';
+        return;
+      }
+
+      try {
+        const url = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec'; // your Apps Script Web App URL
+        const params = new URLSearchParams();
+        params.append('action', 'login');
+        params.append('email', email);
+        params.append('password', password);
+
+        const res = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
+        const data = await res.json();
+
+        if (data.success) {
+          // Redirect or do something on success
+          messageEl.style.color = 'green';
+          messageEl.textContent = 'Login successful! Redirecting...';
+          setTimeout(() => {
+            window.location.href = 'dashboard.html'; // or dashboard page
+          }, 1500);
+        } else {
+          messageEl.style.color = 'red';
+          messageEl.textContent = 'Invalid email or password.';
+        }
+      } catch (err) {
+        messageEl.style.color = 'red';
+        messageEl.textContent = 'Error logging in. Please try again later.';
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>

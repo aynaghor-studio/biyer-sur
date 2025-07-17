@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title>Review & Confirm Selection - সোনার ফ্রেম</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --primary-gold: #c9a341;
+      --secondary-gold: #8a6e3b;
+      --background: #faf8f1;
+      --text-dark: #2c2c2c;
+      --cta-blue: #3c4c77;
+    }
+  </style>
+</head>
+<body class="bg-[var(--background)] min-h-screen flex flex-col font-sans">
+
+  <header class="bg-white py-6 text-center shadow">
+    <h1 class="text-3xl font-bold text-[var(--primary-gold)]">Review Your Selection</h1>
+    <p class="text-gray-700 mt-2">Confirm your final album images</p>
+    <p class="text-gray-500 mt-1">Client: <span id="clientNameDisplay" class="font-medium"></span></p>
+  </header>
+
+  <main class="flex-grow px-6 py-10 max-w-6xl mx-auto">
+    <div id="reviewGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10"></div>
+    
+    <div class="bg-white p-6 rounded shadow max-w-2xl mx-auto">
+      <h2 class="text-xl font-semibold mb-4 text-[var(--primary-gold)]">Declaration</h2>
+      <p class="text-sm text-gray-700 mb-4">
+        I, <span id="clientNameDeclaration" class="font-semibold text-[var(--text-dark)]"></span>, confirm that these are the final selected images for my album. I understand no further changes will be possible after submission.
+      </p>
+
+      <button id="confirmBtn" class="w-full bg-[var(--primary-gold)] text-white py-3 px-6 rounded hover:bg-[var(--secondary-gold)] transition mb-4 disabled:opacity-50 disabled:cursor-not-allowed">
+        Confirm Final Selection
+      </button>
+      <button id="changeSelectionBtn" class="w-full border border-[var(--primary-gold)] text-[var(--primary-gold)] py-3 px-6 rounded hover:bg-[var(--primary-gold)] hover:text-white transition">
+        Reselect Images
+      </button>
+
+      <p id="statusMessage" class="text-center mt-4 text-green-600 hidden"></p>
+    </div>
+  </main>
+
+  <footer class="bg-[var(--primary-gold)] text-white text-center py-6">
+    <p>© 2025 সোনার ফ্রেম</p>
+  </footer>
+
+  <script>
+    // Replace with your deployed Apps Script Web App URL
+    const scriptURL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
+    const clientName = localStorage.getItem("clientName") || "Unknown";
+    const selected = JSON.parse(localStorage.getItem("selectedImages")) || [];
+
+    const reviewGrid = document.getElementById("reviewGrid");
+    const clientNameDisplay = document.getElementById("clientNameDisplay");
+    const clientNameDeclaration = document.getElementById("clientNameDeclaration");
+    const statusMessage = document.getElementById("statusMessage");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const changeSelectionBtn = document.getElementById("changeSelectionBtn");
+
+    clientNameDisplay.textContent = clientName;
+    clientNameDeclaration.textContent = clientName;
+
+    // Show images or message if none selected
+    if (selected.length === 0) {
+      reviewGrid.innerHTML = `<p class="col-span-full text-center text-gray-500">No selected images to review.</p>`;
+      confirmBtn.disabled = true;
+    } else {
+      selected.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "Selected Image";
+        img.className = "w-full h-48 object-cover rounded shadow";
+        reviewGrid.appendChild(img);
+      });
+    }
+
+    // Check if client already submitted to disable submit & show notice
+    fetch(`${scriptURL}?action=checkSubmission&clientName=${encodeURIComponent(clientName)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.submitted) {
+          confirmBtn.disabled = true;
+          changeSelectionBtn.disabled = true;
+          statusMessage.textContent = "You have already submitted your final selection.";
+          statusMessage.classList.remove("hidden");
+        }
+      })
+      .catch(() => {
+        // Optional: handle network errors silently
+      });
+
+    // Submit final selection handler
+    confirmBtn.addEventListener("click", () => {
+      if (selected.length === 0) {
+        alert("No images selected to submit.");
+        return;
+      }
+      confirmBtn.disabled = true;
+      statusMessage.textContent = "Submitting...";
+      statusMessage.classList.remove("hidden");
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "saveFinalSelection",
+          clientName,
+          images: selected
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          statusMessage.textContent = "Your selection has been submitted successfully!";
+          localStorage.removeItem("selectedImages");
+          confirmBtn.disabled = true;
+          changeSelectionBtn.disabled = true;
+        } else {
+          statusMessage.textContent = "";
+          confirmBtn.disabled = false;
+          alert(data.message || "Submission failed or already submitted.");
+        }
+      })
+      .catch(() => {
+        alert("Network error. Please try again later.");
+        confirmBtn.disabled = false;
+        statusMessage.textContent = "";
+      });
+    });
+
+    // Change selection handler: redirect back to client dashboard or selection page
+    changeSelectionBtn.addEventListener("click", () => {
+      // Clear current selections and redirect to client dashboard page
+      localStorage.removeItem("selectedImages");
+      window.location.href = "client-dashboard.html"; // Change to your actual selection/dashboard page URL
+    });
+  </script>
+
+</body>
+</html>

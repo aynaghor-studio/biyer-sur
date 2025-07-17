@@ -1,0 +1,26 @@
+🎨 Sonar Frame Website Color Theme
+🟡 1. Primary Color: Regal Gold
+Hex: #C9A341
+
+Symbolizes: Luxury, celebration, timelessness (matching the “Sonar” — gold — concept)
+
+⚫ 2. Secondary Color: Deep Charcoal
+Hex: #2C2C2C
+
+Symbolizes: Contrast, elegance, a modern premium touch
+
+⚪ 3. Background: Soft Ivory or Cream
+Hex: #FAF8F1
+
+Symbolizes: Purity, warmth, a subtle canvas for highlighting images
+
+🟤 4. Accent Color: Antique Bronze
+Hex: #8A6E3B
+
+Use for: Buttons, hover effects, dividers, or to enrich the gold
+
+🟦 5. Optional Highlight: Royal Blue (for calls to action)
+Hex: #3C4C77
+
+Use sparingly for contrast or CTAs (e.g. “Submit Selection” buttons)
+

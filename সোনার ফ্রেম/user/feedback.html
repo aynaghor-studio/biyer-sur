@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Feedback | সোনার ফ্রেম</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .star { font-size: 2rem; cursor: pointer; color: #d1d5db; }
+  .star.selected { color: #c9a341; }
+</style>
+</head>
+<body class="bg-[#faf8f1] min-h-screen flex items-center justify-center px-4">
+  <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full text-center">
+    <h1 class="text-2xl font-bold mb-6 text-[#c9a341]">Feedback for <span class="text-gray-800">সোনার ফ্রেম</span></h1>
+
+    <form id="feedbackForm" class="space-y-4">
+      <div>
+        <label class="block mb-1 font-medium">Your Rating</label>
+        <div id="starRating" class="flex justify-center space-x-2">
+          <span class="star" data-value="1">&#9733;</span>
+          <span class="star" data-value="2">&#9733;</span>
+          <span class="star" data-value="3">&#9733;</span>
+          <span class="star" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
+      </div>
+
+      <div>
+        <label for="feedback" class="block mb-1 font-medium">Your Feedback</label>
+        <textarea id="feedback" rows="4" required class="w-full border rounded px-3 py-2" placeholder="Write your feedback here..."></textarea>
+      </div>
+
+      <button type="submit" class="bg-[#c9a341] text-white px-6 py-2 rounded hover:bg-[#8a6e3b] transition">
+        Submit Feedback
+      </button>
+    </form>
+
+    <div id="successMsg" class="hidden mt-6 text-green-600 font-semibold">
+      🎉 Thank you for your feedback! <br />
+      <a href="https://your-homepage-url.com" class="inline-block mt-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700">← Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    const clientName = localStorage.getItem('clientName') || 'Guest User';
+    const eventType = localStorage.getItem('eventType') || 'Event';
+
+    let selectedRating = 0;
+    const stars = document.querySelectorAll('.star');
+    const form = document.getElementById('feedbackForm');
+    const successMsg = document.getElementById('successMsg');
+
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        selectedRating = star.dataset.value;
+        updateStars(selectedRating);
+      });
+    });
+
+    function updateStars(rating) {
+      stars.forEach(star => {
+        star.classList.toggle('selected', star.dataset.value <= rating);
+      });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const feedbackText = document.getElementById('feedback').value.trim();
+
+      if (selectedRating === 0) {
+        alert('Please select a star rating.');
+        return;
+      }
+      if (!feedbackText) {
+        alert('Please enter your feedback.');
+        return;
+      }
+
+      const payload = {
+        name: clientName,
+        eventType: eventType,
+        rating: selectedRating,
+        feedback: feedbackText
+      };
+
+      try {
+        // Replace YOUR_WEB_APP_URL with your deployed Apps Script URL
+        const response = await fetch('https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec', {
+          method: 'POST',
+          mode: 'no-cors', // see note below
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        // Since mode no-cors limits response visibility, show success anyway
+        form.classList.add('hidden');
+        successMsg.classList.remove('hidden');
+
+      } catch (error) {
+        alert('Failed to send feedback: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

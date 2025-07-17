@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title>About সোনার ফ্রেম</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+  <style>
+    :root {
+      --primary-gold: #c9a341;
+      --secondary-gold: #8a6e3b;
+      --background: #faf8f1;
+      --text-dark: #242423;
+      --text-light: #3f3f3f;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text-dark);
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="text-2xl font-bold text-[var(--primary-gold)] select-none cursor-default">সোনার ফ্রেম</div>
+      <ul class="flex space-x-6 text-[var(--text-light)] font-semibold">
+        <li><a href="index.html" class="hover:text-[var(--secondary-gold)] transition">Home</a></li>
+        <li><a href="about.html" class="text-[var(--primary-gold)] font-bold cursor-default">About</a></li>
+        <li><a href="#features" class="hover:text-[var(--secondary-gold)] transition">Features</a></li>
+        <li><a href="#contact" class="hover:text-[var(--secondary-gold)] transition">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- About Section -->
+  <section class="flex-grow max-w-5xl mx-auto px-6 py-20" data-aos="fade-up">
+    <h1 class="text-5xl font-extrabold text-[var(--primary-gold)] mb-8 text-center select-text">About সোনার ফ্রেম</h1>
+    
+    <p class="text-lg text-[var(--text-light)] mb-6 leading-relaxed">
+      সোনার ফ্রেম is a dedicated online platform designed to simplify and enhance the way event photographs are selected and organized into beautiful albums. We believe that every special moment deserves to be captured, cherished, and easily accessible.
+    </p>
+
+    <p class="text-lg text-[var(--text-light)] mb-6 leading-relaxed">
+      Our mission is to provide a seamless and enjoyable experience for clients to choose their favorite event photos from any device — whether on mobile or desktop. With an intuitive and user-friendly interface, photo selection becomes fun, fast, and hassle-free.
+    </p>
+
+    <p class="text-lg text-[var(--text-light)] mb-6 leading-relaxed">
+      We prioritize your privacy and security by ensuring that every client has exclusive access to their event’s photo collection, keeping your memories safe and confidential.
+    </p>
+
+    <p class="text-lg text-[var(--text-light)] leading-relaxed">
+      At সোনার ফ্রেম, we’re passionate about turning your precious moments into lasting albums — with simplicity, elegance, and care.
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-[var(--primary-gold)] text-white py-6 text-center select-none">
+    <p>© 2025 সোনার ফ্রেম. All rights reserved.</p>
+  </footer>
+
+  <script>
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+    });
+  </script>
+</body>
+</html>

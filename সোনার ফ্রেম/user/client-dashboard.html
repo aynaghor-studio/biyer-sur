@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Client Dashboard - সোনার ফ্রেম</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --primary-gold: #c9a341;
+      --secondary-gold: #8a6e3b;
+      --background: #faf8f1;
+    }
+    .selected {
+      outline: 4px solid var(--primary-gold);
+    }
+  </style>
+</head>
+<body class="bg-[var(--background)]">
+
+  <header class="text-center py-6 bg-white shadow">
+    <h1 class="text-3xl font-bold text-[var(--primary-gold)]">সোনার ফ্রেম - Dashboard</h1>
+    <p class="text-gray-600 mt-2">Select the images for your album</p>
+  </header>
+
+  <main class="p-6 max-w-7xl mx-auto">
+    <div id="gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+
+    <div class="text-center mt-10">
+      <button id="reviewBtn" class="bg-[var(--primary-gold)] text-white px-6 py-3 rounded hover:bg-[var(--secondary-gold)]">
+        Proceed to Review
+      </button>
+    </div>
+  </main>
+
+  <script>
+    const clientName = localStorage.getItem('clientName');
+    if (!clientName) {
+      alert("Client not logged in.");
+      window.location.href = "login.html";
+    }
+
+    const gallery = document.getElementById('gallery');
+    const reviewBtn = document.getElementById('reviewBtn');
+    const selectedImages = [];
+
+    const scriptURL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
+    fetch(`${scriptURL}?action=getImages&clientName=${encodeURIComponent(clientName)}`)
+      .then(res => res.json())
+      .then(images => {
+        images.forEach((img, index) => {
+          const imageElement = document.createElement('img');
+          imageElement.src = img.imageUrl;
+          imageElement.className = 'w-full h-48 object-cover rounded cursor-pointer shadow';
+          imageElement.onclick = () => {
+            imageElement.classList.toggle('selected');
+            const url = imageElement.src;
+            if (selectedImages.includes(url)) {
+              selectedImages.splice(selectedImages.indexOf(url), 1);
+            } else {
+              selectedImages.push(url);
+            }
+          };
+          gallery.appendChild(imageElement);
+        });
+      });
+
+    reviewBtn.onclick = () => {
+      if (selectedImages.length === 0) {
+        alert("Please select at least one image.");
+        return;
+      }
+      localStorage.setItem('selectedImages', JSON.stringify(selectedImages));
+      window.location.href = "review-selected.html";
+    };
+  </script>
+</body>
+</html>

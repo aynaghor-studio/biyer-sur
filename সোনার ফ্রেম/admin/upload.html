@@ -1,0 +1,113 @@
+<!-- admin-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard - সোনার ফ্রেম</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <style>
+    :root {
+      --primary-gold: #c9a341;
+      --secondary-gold: #8a6e3b;
+      --background: #faf8f1;
+      --text-dark: #242423;
+    }
+    body {
+      background-color: var(--background);
+      color: var(--text-dark);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <header class="bg-white shadow-md text-center py-6">
+    <h1 class="text-3xl font-bold text-[var(--primary-gold)]">Admin Dashboard</h1>
+  </header>
+
+  <main class="flex-grow px-6 py-12 max-w-xl mx-auto" data-aos="fade-up">
+    <form id="uploadForm" class="bg-white p-8 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold mb-6">Upload Event Images</h2>
+
+      <label for="clientName" class="block font-semibold mb-2">Client Name</label>
+      <input
+        id="clientName"
+        type="text"
+        required
+        class="w-full border border-gray-300 rounded-md px-4 py-2 mb-4"
+      />
+
+      <label for="eventType" class="block font-semibold mb-2">Event Type</label>
+      <input
+        id="eventType"
+        type="text"
+        required
+        class="w-full border border-gray-300 rounded-md px-4 py-2 mb-4"
+      />
+
+      <label for="imageFiles" class="block font-semibold mb-2">Select Images</label>
+      <input
+        id="imageFiles"
+        type="file"
+        multiple
+        accept="image/*"
+        required
+        class="mb-6"
+      />
+
+      <button
+        type="submit"
+        class="w-full bg-[var(--primary-gold)] text-white font-bold py-3 rounded-md hover:bg-[var(--secondary-gold)] transition"
+      >
+        Upload Images
+      </button>
+
+      <p id="uploadMsg" class="mt-4 text-center text-[var(--text-dark)] font-semibold"></p>
+    </form>
+  </main>
+
+  <footer class="bg-[var(--primary-gold)] text-white text-center py-4">
+    <p>© 2025 সোনার ফ্রেম - Admin Panel</p>
+  </footer>
+
+  <script>
+    AOS.init({ duration: 700, once: true });
+
+    document.getElementById('uploadForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const msg = document.getElementById('uploadMsg');
+      msg.textContent = "Uploading...";
+
+      const formData = new FormData();
+      formData.append('action', 'uploadImages');
+      formData.append('clientName', document.getElementById('clientName').value.trim());
+      formData.append('eventType', document.getElementById('eventType').value.trim());
+
+      const files = document.getElementById('imageFiles').files;
+      for (let i = 0; i < files.length; i++) {
+        formData.append(`file${i}`, files[i]);
+      }
+
+      try {
+        const res = await fetch('https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          msg.textContent = "Upload successful!";
+          document.getElementById('uploadForm').reset();
+        } else {
+          msg.textContent = "Upload failed. Try again.";
+        }
+      } catch (err) {
+        console.error(err);
+        msg.textContent = "Error uploading images.";
+      }
+    });
+  </script>
+</body>
+</html>

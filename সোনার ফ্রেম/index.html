@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title>সোনার ফ্রেম - Event Album Selection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+  <style>
+    :root {
+      --primary-gold: #c9a341;
+      --secondary-gold: #8a6e3b;
+      --background: #faf8f1;
+      --text-dark: #242423;
+      --text-light: #3f3f3f;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text-dark);
+      scroll-behavior: smooth;
+    }
+
+    .star {
+      color: var(--primary-gold);
+      font-size: 1.25rem;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="text-2xl font-bold text-[var(--primary-gold)] select-none cursor-default">সোনার ফ্রেম</div>
+      <ul class="flex space-x-6 text-[var(--text-light)] font-semibold">
+        <li><a href="#home" class="hover:text-[var(--secondary-gold)] transition">Home</a></li>
+        <li><a href="#features" class="hover:text-[var(--secondary-gold)] transition">Features</a></li>
+        <li><a href="#testimonials" class="hover:text-[var(--secondary-gold)] transition">Testimonials</a></li>
+        <li><a href="#contact" class="hover:text-[var(--secondary-gold)] transition">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="flex-grow flex flex-col justify-center items-center text-center px-6 py-20 max-w-7xl mx-auto" data-aos="fade-up">
+    <h1 class="text-5xl font-extrabold text-[var(--primary-gold)] mb-6 select-text">Welcome to সোনার ফ্রেম</h1>
+    <p class="max-w-3xl text-lg text-[var(--text-light)] mb-8">Select your favorite event photos easily and create stunning albums — all at your fingertips!</p>
+    <a href="#testimonials" class="bg-[var(--primary-gold)] hover:bg-[var(--secondary-gold)] text-white px-8 py-3 rounded-md font-semibold transition">
+      See What Clients Say
+    </a>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="bg-white py-16 px-6 max-w-7xl mx-auto" data-aos="fade-up">
+    <h2 class="text-4xl font-bold text-center mb-12 text-[var(--primary-gold)]">Why Choose সোনার ফ্রেম?</h2>
+
+    <div class="grid gap-12 md:grid-cols-4 max-w-6xl mx-auto text-center">
+      <div class="p-6 bg-[var(--background)] rounded-lg shadow hover:shadow-lg transition">
+        <svg class="mx-auto mb-4 w-12 h-12 text-[var(--primary-gold)]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 7v4a1 1 0 001 1h3M9 7v10M9 17v4m0-4h5a1 1 0 001-1v-6"></path></svg>
+        <h3 class="text-xl font-semibold mb-2">Easy Photo Selection</h3>
+        <p class="text-[var(--text-light)]">Clients can effortlessly pick their favorite photos from your event gallery.</p>
+      </div>
+
+      <div class="p-6 bg-[var(--background)] rounded-lg shadow hover:shadow-lg transition">
+        <svg class="mx-auto mb-4 w-12 h-12 text-[var(--primary-gold)]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M8 12l2 2 4-4"></path></svg>
+        <h3 class="text-xl font-semibold mb-2">User-Friendly Interface</h3>
+        <p class="text-[var(--text-light)]">A simple, clean design makes photo selection and feedback easy for everyone.</p>
+      </div>
+
+      <div class="p-6 bg-[var(--background)] rounded-lg shadow hover:shadow-lg transition">
+        <svg class="mx-auto mb-4 w-12 h-12 text-[var(--primary-gold)]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
+        <h3 class="text-xl font-semibold mb-2">Mobile & Desktop Ready</h3>
+        <p class="text-[var(--text-light)]">Fully responsive so your clients can select photos anytime, anywhere.</p>
+      </div>
+
+      <div class="p-6 bg-[var(--background)] rounded-lg shadow hover:shadow-lg transition">
+        <svg class="mx-auto mb-4 w-12 h-12 text-[var(--primary-gold)]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 11c-1.5 0-2.5 1-2.5 2.5S10.5 16 12 16s2.5-1 2.5-2.5S13.5 11 12 11z"></path><path d="M2 12a10 10 0 1020 0 10 10 0 00-20 0z"></path></svg>
+        <h3 class="text-xl font-semibold mb-2">Secure & Private</h3>
+        <p class="text-[var(--text-light)]">Each client accesses only their event’s photos, ensuring confidentiality.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-16 px-6 max-w-7xl mx-auto" data-aos="fade-up">
+    <h2 class="text-4xl font-bold text-center mb-12 text-[var(--primary-gold)]">Client Testimonials</h2>
+
+    <div id="testimonialContainer" class="max-w-4xl mx-auto space-y-12 min-h-[200px] text-center">
+      <p class="text-gray-400">Loading testimonials...</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="bg-white py-12 px-6 max-w-7xl mx-auto" data-aos="fade-up">
+    <h2 class="text-3xl font-bold mb-6 text-center text-[var(--primary-gold)]">Get in Touch</h2>
+    <p class="text-center max-w-2xl mx-auto mb-8 text-[var(--text-light)]">
+      Interested in our services or want to give feedback? Reach out to us anytime!
+    </p>
+    <div class="text-center">
+      <a href="mailto:contact@sonarframe.com" class="inline-block bg-[var(--primary-gold)] hover:bg-[var(--secondary-gold)] text-white px-8 py-3 rounded-md font-semibold transition">
+        Email Us
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-[var(--primary-gold)] text-white py-6 text-center select-none">
+    <p>© 2025 সোনার ফ্রেম. All rights reserved.</p>
+  </footer>
+
+  <script>
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+    });
+
+    const testimonialContainer = document.getElementById('testimonialContainer');
+
+    async function loadTestimonials() {
+      try {
+        // Replace YOUR_DEPLOYMENT_ID with your actual Apps Script deployment ID
+        const response = await fetch('https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec?action=getTestimonials');
+        const testimonials = await response.json();
+
+        if (!testimonials.length) {
+          testimonialContainer.innerHTML = '<p class="text-center text-gray-500">No testimonials available yet.</p>';
+          return;
+        }
+
+        testimonialContainer.innerHTML = ''; // clear loading
+
+        testimonials.forEach(({name, rating, feedback}) => {
+          const stars = Array(rating).fill('&#9733;').join(' ');
+          const testimonialHTML = `
+            <div class="bg-[var(--background)] rounded-lg p-6 shadow-md max-w-3xl mx-auto" data-aos="fade-up">
+              <p class="text-gray-800 italic mb-4">&ldquo;${feedback}&rdquo;</p>
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-[var(--secondary-gold)]">${name}</h3>
+                <div class="star" aria-label="Rating">${stars}</div>
+              </div>
+            </div>
+          `;
+          testimonialContainer.insertAdjacentHTML('beforeend', testimonialHTML);
+        });
+      } catch {
+        testimonialContainer.innerHTML = '<p class="text-center text-red-500">Failed to load testimonials.</p>';
+      }
+    }
+
+    loadTestimonials();
+  </script>
+</body>
+</html>

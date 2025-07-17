@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - সোনার ফ্রেম</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- JSZip & FileSaver for ZIP download -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+  <style>
+    /* Custom Sonar Frame colors for Tailwind */
+    :root {
+      --primary-color: #C9A341;       /* Regal Gold */
+      --secondary-color: #2C2C2C;     /* Deep Charcoal */
+      --background-color: #FAF8F1;    /* Soft Ivory */
+      --accent-color: #8A6E3B;        /* Antique Bronze */
+      --highlight-color: #3C4C77;     /* Royal Blue */
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--secondary-color);
+    }
+
+    /* Scrollbar for client list */
+    #clientList::-webkit-scrollbar {
+      width: 8px;
+    }
+    #clientList::-webkit-scrollbar-thumb {
+      background-color: var(--accent-color);
+      border-radius: 4px;
+    }
+    #clientList::-webkit-scrollbar-track {
+      background: var(--background-color);
+    }
+  </style>
+</head>
+<body class="min-h-screen font-sans">
+
+  <div class="container mx-auto p-6">
+
+    <h1 class="text-4xl font-extrabold mb-10 text-center" style="color: var(--primary-color);">সোনার ফ্রেম - Admin Dashboard</h1>
+
+    <div class="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-8 border-2 border-var(--primary-color)">
+
+      <h2 class="text-2xl mb-4 font-semibold" style="color: var(--secondary-color);">Clients with Final Selections</h2>
+
+      <ul id="clientList" class="mb-8 max-h-64 overflow-y-auto rounded border border-var(--accent-color) p-4 space-y-2 bg-white text-var(--secondary-color)">
+        <li class="text-gray-500">Loading clients...</li>
+      </ul>
+
+      <h3 id="selectedClientTitle" class="text-xl font-semibold mb-4 hidden" style="color: var(--secondary-color);"></h3>
+
+      <div id="imagesContainer" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+
+      <button id="downloadZipBtn" disabled
+        class="w-full bg-[var(--primary-color)] hover:bg-[var(--accent-color)] font-semibold py-3 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300">
+        Download Selected Images ZIP
+      </button>
+    </div>
+
+  </div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
+  const clientList = document.getElementById("clientList");
+  const imagesContainer = document.getElementById("imagesContainer");
+  const selectedClientTitle = document.getElementById("selectedClientTitle");
+  const downloadZipBtn = document.getElementById("downloadZipBtn");
+
+  let currentImages = [];
+  let currentClient = null;
+
+  async function fetchClients() {
+    clientList.innerHTML = `<li class="text-gray-500">Loading clients...</li>`;
+    try {
+      const res = await fetch(`${WEB_APP_URL}?action=getAllClients`);
+      const data = await res.json();
+
+      if (!data.clients || data.clients.length === 0) {
+        clientList.innerHTML = `<li class="text-gray-500">No clients have submitted final selections.</li>`;
+        return;
+      }
+
+      clientList.innerHTML = "";
+      data.clients.forEach(client => {
+        const li = document.createElement("li");
+        li.textContent = client;
+        li.className = "cursor-pointer p-2 rounded hover:bg-[var(--primary-color)] hover:text-white transition-colors";
+        li.addEventListener("click", () => selectClient(client));
+        clientList.appendChild(li);
+      });
+
+    } catch (err) {
+      console.error(err);
+      clientList.innerHTML = `<li class="text-red-600">Failed to load clients.</li>`;
+    }
+  }
+
+  async function selectClient(clientName) {
+    currentClient = clientName;
+    selectedClientTitle.textContent = `Selected Client: ${clientName}`;
+    selectedClientTitle.classList.remove("hidden");
+    imagesContainer.innerHTML = `<p class="text-gray-500">Loading images...</p>`;
+    downloadZipBtn.disabled = true;
+
+    try {
+      const res = await fetch(`${WEB_APP_URL}?action=getFinalSelections&clientName=${encodeURIComponent(clientName)}`);
+      const data = await res.json();
+
+      if (!data.images || data.images.length === 0) {
+        imagesContainer.innerHTML = `<p class="text-gray-500">No selected images found for this client.</p>`;
+        downloadZipBtn.disabled = true;
+        currentImages = [];
+        return;
+      }
+
+      currentImages = data.images;
+
+      imagesContainer.innerHTML = currentImages.map(url =>
+        `<div class="rounded overflow-hidden shadow-lg border border-[var(--primary-color)]">
+          <img src="${url}" alt="Selected Image" loading="lazy" class="w-full h-40 object-cover" />
+        </div>`
+      ).join("");
+
+      downloadZipBtn.disabled = false;
+
+    } catch (err) {
+      console.error(err);
+      imagesContainer.innerHTML = `<p class="text-red-600">Error loading images.</p>`;
+      downloadZipBtn.disabled = true;
+      currentImages = [];
+    }
+  }
+
+  async function downloadZip() {
+    if (!currentImages.length) return;
+
+    downloadZipBtn.disabled = true;
+    downloadZipBtn.textContent = "Preparing ZIP...";
+
+    const zip = new JSZip();
+    const folderName = currentClient ? currentClient.replace(/\s+/g, '_') : "images";
+    const folder = zip.folder(folderName);
+
+    try {
+      const promises = currentImages.map(async (url, idx) => {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to fetch image at ${url}`);
+        const blob = await res.blob();
+
+        let ext = url.split('.').pop().split(/\#|\?/)[0];
+        if (!ext || ext.length > 5) ext = 'jpg';
+
+        folder.file(`image_${idx + 1}.${ext}`, blob);
+      });
+
+      await Promise.all(promises);
+
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `${folderName}_selected_images.zip`);
+
+    } catch (err) {
+      alert("Error preparing ZIP: " + err.message);
+      console.error(err);
+    }
+
+    downloadZipBtn.disabled = false;
+    downloadZipBtn.textContent = "Download Selected Images ZIP";
+  }
+
+  downloadZipBtn.addEventListener("click", downloadZip);
+
+  fetchClients();
+
+</script>
+</body>
+</html>
