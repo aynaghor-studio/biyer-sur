@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#FAF3E0] font-sans flex items-center justify-center min-h-screen">
+
+  <div class="bg-white shadow-lg rounded-lg w-full max-w-md p-8">
+    <h2 class="text-2xl font-bold text-center text-[#B71C1C] mb-4">Reset Your Password</h2>
+    <p id="statusMsg" class="text-sm text-center text-[#2E7D32] mb-4">Please enter your new password below.</p>
+
+    <form id="resetForm" class="space-y-4">
+      <input type="password" id="password" placeholder="New Password" class="w-full p-3 border rounded focus:ring-[#FFC107]" required>
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" class="w-full p-3 border rounded focus:ring-[#FFC107]" required>
+      <button type="submit" class="w-full bg-[#FFC107] text-white py-3 rounded hover:bg-yellow-500 transition">Reset Password</button>
+    </form>
+
+    <p id="responseMsg" class="text-center mt-6 text-[#3F51B5] font-semibold"></p>
+  </div>
+
+  <script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxKVWhsBukpU0tpA7eMPHlytbhC5uX-vD1jwIakAvuqdH2cbJAdpLvyKdzEvKhzFksBaA/exec'; // Replace with your Apps Script Web App URL
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const email = urlParams.get('email');
+  const token = urlParams.get('token');
+
+  const resetForm = document.getElementById('resetForm');
+  const responseMsg = document.getElementById('responseMsg');
+  const validationError = document.getElementById('validationError');
+  const statusMsg = document.getElementById('statusMsg');
+
+  if (!email || !token) {
+    resetForm.style.display = 'none';
+    statusMsg.textContent = "Invalid reset link. Please check your email.";
+  }
+
+  function isStrongPassword(password) {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?]).{8,}$/;
+    return regex.test(password);
+  }
+
+  resetForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    validationError.textContent = "";
+    responseMsg.textContent = "";
+
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+      validationError.textContent = "Passwords do not match.";
+      return;
+    }
+
+    if (!isStrongPassword(password)) {
+      validationError.textContent =
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.";
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("action", "resetPassword");
+    formData.append("email", email);
+    formData.append("token", token);
+    formData.append("newPassword", password);
+
+    fetch(scriptURL, {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.text())
+    .then(text => {
+      responseMsg.textContent = text;
+      resetForm.reset();
+    })
+    .catch(err => {
+      responseMsg.textContent = "An error occurred: " + err;
+    });
+  });
+</script>
+
+</body>
+</html>

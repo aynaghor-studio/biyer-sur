@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>বিয়ের সুর - Contact Us</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body class="bg-[#FAF3E0] text-gray-800 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="text-2xl font-bold text-[#B71C1C]">বিয়ের সুর</div>
+      <div class="hidden md:flex space-x-6 text-[#3F51B5] font-medium">
+        <a href="index.html" class="hover:text-[#B71C1C]">Home</a>
+        <a href="about.html" class="hover:text-[#B71C1C]">About</a>
+        <a href="pricing.html" class="hover:text-[#B71C1C]">Pricing</a>
+        <a href="contact.html" class="text-[#B71C1C] font-bold border-b-2 border-[#B71C1C]">Contact</a>
+        <a href="studio.html" class="hover:text-[#B71C1C]">Studio</a>
+        <a href="login.html" class="hover:text-[#B71C1C]">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contact Section -->
+  <main class="flex-grow max-w-6xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold text-[#B71C1C] text-center mb-8">Contact Us</h1>
+    <p class="text-center text-[#2E7D32] mb-12 max-w-3xl mx-auto">
+      If you face any problem related to our website or services, please fill up the form below or contact us manually at
+      <a href="mailto:saikatroy71045@gmail.com" class="text-[#B71C1C] underline">saikatroy71045@gmail.com</a>.
+    </p>
+
+    <div class="flex flex-col md:flex-row gap-10 max-w-5xl mx-auto">
+      
+      <!-- Contact Form -->
+      <form
+        id="contactForm"
+        class="flex-1 bg-white shadow-lg rounded-lg p-8"
+        novalidate
+      >
+        <h2 class="text-2xl font-semibold text-[#3F51B5] mb-6">Send Us a Message</h2>
+
+        <label for="name" class="block mb-2 font-medium text-gray-700">Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          placeholder="Your Name"
+          class="w-full mb-5 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#B71C1C] transition"
+        />
+
+        <label for="email" class="block mb-2 font-medium text-gray-700">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="Your Email"
+          class="w-full mb-5 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#B71C1C] transition"
+        />
+
+        <label for="message" class="block mb-2 font-medium text-gray-700">Message</label>
+        <textarea
+          id="message"
+          name="message"
+          required
+          rows="5"
+          placeholder="Write your message here..."
+          class="w-full mb-5 p-3 border border-gray-300 rounded resize-y focus:outline-none focus:ring-2 focus:ring-[#B71C1C] transition"
+        ></textarea>
+
+        <button
+          type="submit"
+          class="w-full bg-[#FFC107] hover:bg-yellow-500 text-white font-semibold py-3 rounded transition"
+        >
+          Send Message
+        </button>
+      </form>
+
+      <!-- Manual Contact Info Card -->
+      <div
+        class="flex-1 bg-[#FAF3E0] border-2 border-[#B71C1C] rounded-lg shadow-lg p-8 flex flex-col justify-center"
+      >
+        <h2 class="text-2xl font-semibold text-[#B71C1C] mb-4">Manual Contact</h2>
+        <p class="text-[#2E7D32] mb-6">
+          If you prefer, contact us directly at:
+        </p>
+        <a
+          href="mailto:saikatroy71045@gmail.com"
+          class="text-[#3F51B5] font-semibold underline text-lg hover:text-[#B71C1C]"
+        >
+          saikatroy71045@gmail.com
+        </a>
+        <p class="mt-6 text-[#2E7D32] italic">
+          We aim to respond within 24 hours.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#3F51B5] text-white py-6 mt-auto">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+      <p>&copy; 2025 বিয়ের সুর. All rights reserved.</p>
+      <div class="mt-4 md:mt-0 flex space-x-4">
+        <a href="index.html" class="hover:text-[#FFC107]">Home</a>
+        <a href="about.html" class="hover:text-[#FFC107]">About</a>
+        <a href="pricing.html" class="hover:text-[#FFC107]">Pricing</a>
+        <a href="contact.html" class="hover:text-[#FFC107]">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript to handle form submission -->
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwzwUulxs3UfFTlQS_gOFQ6qQQMbSWR0NQLIOrbERzY2nTZnK488CW_bV_tYzDz37GFVQ/exec"; // Replace with your script URL
+
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const formData = new FormData(form);
+
+      fetch(WEB_APP_URL, {
+        method: 'POST',
+        body: formData
+      }).then(response => {
+        if (response.ok) {
+          alert('Thank you! Your message has been sent.');
+          form.reset();
+        } else {
+          alert('Error submitting form. Please try again.');
+        }
+      }).catch(() => {
+        alert('Network error. Please try again.');
+      });
+    });
+  </script>
+
+</body>
+</html>

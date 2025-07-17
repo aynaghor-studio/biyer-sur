@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Signup & Login with Password Reset</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#FAF3E0] flex items-center justify-center min-h-screen font-sans">
+
+  <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+    <h1 class="text-[#B71C1C] text-3xl font-bold mb-6 text-center">User Authentication</h1>
+
+    <!-- Tabs -->
+    <div class="flex justify-center space-x-4 mb-6">
+      <button id="tab-signup" class="text-[#3F51B5] font-semibold border-b-2 border-[#3F51B5] pb-1">Sign Up</button>
+      <button id="tab-login" class="text-gray-600 hover:text-[#3F51B5] pb-1">Login</button>
+      <!-- Removed Reset Password Tab -->
+    </div>
+
+    <!-- Signup Form -->
+    <form id="signupForm" class="space-y-4">
+      <input type="text" id="signupFullName" placeholder="Full Name" class="w-full p-3 border rounded focus:ring-[#FFC107]" required />
+      <input type="text" id="signupUsername" placeholder="Username" class="w-full p-3 border rounded focus:ring-[#FFC107]" required />
+      <input type="email" id="signupEmail" placeholder="Email" class="w-full p-3 border rounded focus:ring-[#FFC107]" required />
+      <input type="password" id="signupPassword" placeholder="Password" class="w-full p-3 border rounded focus:ring-[#FFC107]" required />
+      <button type="submit" class="w-full bg-[#FFC107] text-white py-3 rounded hover:bg-yellow-500 transition">Sign Up</button>
+      <p id="signupMsg" class="text-center text-sm mt-2"></p>
+    </form>
+
+    <!-- Login Form (hidden by default) -->
+    <form id="loginForm" class="space-y-4 hidden relative">
+      <input type="text" id="loginUsername" placeholder="Username" class="w-full p-3 border rounded focus:ring-[#FFC107]" required />
+      <div class="relative">
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Password"
+          class="w-full p-3 border rounded focus:ring-[#FFC107]"
+          required
+        />
+      </div>
+      <button type="submit" class="w-full bg-[#FFC107] text-white py-3 rounded hover:bg-yellow-500 transition">Login</button>
+
+      <!-- Forgot Password link below login button, outside form inputs -->
+      <p class="text-right mt-2">
+        <button type="button" id="forgotPasswordBtn" class="text-[#3F51B5] hover:text-[#B71C1C] underline focus:outline-none">
+          Forgot password?
+        </button>
+      </p>
+
+      <p id="loginMsg" class="text-center text-sm mt-2"></p>
+    </form>
+
+    <div class="mt-6 text-center">
+        <a href="../index.html" class="inline-block px-6 py-2 border border-[#3F51B5] text-[#3F51B5] rounded-md hover:bg-[#3F51B5] hover:text-white transition">
+          Home
+        </a>
+      </div>
+
+    <!-- Password Reset Request Form (hidden by default) -->
+    <form id="resetForm" class="space-y-4 hidden">
+      <input type="text" id="resetFullName" placeholder="Full Name" class="w-full p-3 border rounded focus:ring-[#FFC107]" required />
+      <input type="text" id="resetUsername" placeholder="Username" class="w-full p-3 border rounded focus:ring-[#FFC107]" required />
+      <input type="email" id="resetEmail" placeholder="Email" class="w-full p-3 border rounded focus:ring-[#FFC107]" required />
+      <button type="submit" class="w-full bg-[#FFC107] text-white py-3 rounded hover:bg-yellow-500 transition">Send Reset Link</button>
+      <p id="resetMsg" class="text-center text-sm mt-2"></p>
+      <p class="text-center mt-2">
+        <button type="button" id="backToLoginBtn" class="text-[#3F51B5] hover:text-[#B71C1C] underline focus:outline-none">
+          &larr; Back to Login
+        </button>
+      </p>
+    </form>
+  </div>
+
+  <script>
+    // Tab switching logic (only Signup & Login tabs)
+    const signupTab = document.getElementById('tab-signup');
+    const loginTab = document.getElementById('tab-login');
+
+    const signupForm = document.getElementById('signupForm');
+    const loginForm = document.getElementById('loginForm');
+    const resetForm = document.getElementById('resetForm');
+
+    function showTab(tab) {
+      signupForm.classList.add('hidden');
+      loginForm.classList.add('hidden');
+      resetForm.classList.add('hidden');
+
+      signupTab.classList.remove('border-b-2', 'border-[#3F51B5]', 'font-semibold');
+      loginTab.classList.remove('border-b-2', 'border-[#3F51B5]', 'font-semibold');
+
+      if(tab === 'signup'){
+        signupForm.classList.remove('hidden');
+        signupTab.classList.add('border-b-2', 'border-[#3F51B5]', 'font-semibold');
+      } else if(tab === 'login'){
+        loginForm.classList.remove('hidden');
+        loginTab.classList.add('border-b-2', 'border-[#3F51B5]', 'font-semibold');
+      }
+    }
+
+    signupTab.onclick = () => showTab('signup');
+    loginTab.onclick = () => showTab('login');
+
+    // Initially show signup tab
+    showTab('signup');
+
+    // Forgot password button inside login form
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+    const backToLoginBtn = document.getElementById('backToLoginBtn');
+
+    forgotPasswordBtn.addEventListener('click', () => {
+      loginForm.classList.add('hidden');
+      resetForm.classList.remove('hidden');
+      signupForm.classList.add('hidden');
+      signupTab.classList.remove('border-b-2', 'border-[#3F51B5]', 'font-semibold');
+      loginTab.classList.remove('border-b-2', 'border-[#3F51B5]', 'font-semibold');
+    });
+
+    backToLoginBtn.addEventListener('click', () => {
+      resetForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      signupForm.classList.add('hidden');
+      loginTab.classList.add('border-b-2', 'border-[#3F51B5]', 'font-semibold');
+    });
+
+    // Replace with your deployed Apps Script Web App URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxKVWhsBukpU0tpA7eMPHlytbhC5uX-vD1jwIakAvuqdH2cbJAdpLvyKdzEvKhzFksBaA/exec';
+
+    // Signup form submission
+    signupForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const fullName = document.getElementById('signupFullName').value.trim();
+      const username = document.getElementById('signupUsername').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value.trim();
+
+      const formData = new FormData();
+      formData.append('action', 'signup');
+      formData.append('fullName', fullName);
+      formData.append('username', username);
+      formData.append('email', email);
+      formData.append('password', password);
+
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(res => res.text())
+        .then(text => {
+          document.getElementById('signupMsg').textContent = text;
+          if(text.toLowerCase().includes('success')) signupForm.reset();
+        })
+        .catch(err => {
+          document.getElementById('signupMsg').textContent = 'Error: ' + err;
+        });
+    });
+
+    // Login form submission
+    loginForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+
+  const formData = new FormData();
+  formData.append('action', 'login');
+  formData.append('username', username);
+  formData.append('password', password);
+
+  fetch(scriptURL, { method: 'POST', body: formData })
+    .then(res => res.json())  // Parse JSON response
+    .then(data => {
+      document.getElementById('loginMsg').textContent = data.message;
+      if (data.success) {
+        loginForm.reset();
+        // Redirect to library.html on successful login
+        if (data.redirectUrl) {
+          window.location.href = data.redirectUrl;
+        }
+      }
+    })
+    .catch(err => {
+      document.getElementById('loginMsg').textContent = 'Error: ' + err;
+    });
+});
+
+
+    // Password Reset Request form submission
+    resetForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const fullName = document.getElementById('resetFullName').value.trim();
+      const username = document.getElementById('resetUsername').value.trim();
+      const email = document.getElementById('resetEmail').value.trim();
+
+      const formData = new FormData();
+      formData.append('action', 'sendResetLink');
+      formData.append('fullName', fullName);
+      formData.append('username', username);
+      formData.append('email', email);
+
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(res => res.text())
+        .then(text => {
+          document.getElementById('resetMsg').textContent = text;
+          if(text.toLowerCase().includes('sent')) resetForm.reset();
+        })
+        .catch(err => {
+          document.getElementById('resetMsg').textContent = 'Error: ' + err;
+        });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Rich Wedding Red       - #B71C1C (headings, accents)
+Deep Indigo Blue       - #3F51B5 (links, icons)
+Warm Creamy Background - #FAF3E0 (page background)
+Warm Yellow Accent     - #FFC107 (buttons, highlights)
+Dark Green Text        - #2E7D32 (taglines, success highlights)

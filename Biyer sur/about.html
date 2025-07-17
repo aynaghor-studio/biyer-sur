@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About | বিয়ের সুর Wedding Song Library</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali&family=Playfair+Display&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Playfair Display', serif;
+      scroll-behavior: smooth;
+      background-color: #FAF3E0;
+    }
+    .bengali-font {
+      font-family: 'Noto Serif Bengali', serif;
+    }
+
+    /* Navbar underline animation */
+    nav a {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: #B71C1C;
+      transition: width 0.3s ease;
+    }
+    nav a:hover::after {
+      width: 100%;
+    }
+    /* Active link underline */
+    nav a.active::after {
+      width: 100%;
+    }
+
+    /* Fade-in animation for sections */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .fade-in-up {
+      animation: fadeInUp 1s ease forwards;
+      opacity: 0;
+    }
+
+    /* Mobile menu slide down */
+    .slide-down-enter {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+    .slide-down-enter-active {
+      max-height: 500px;
+    }
+
+    /* Button hover scale */
+    .btn-scale:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50" role="navigation" aria-label="Primary Navigation">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" class="text-3xl font-extrabold text-[#B71C1C] bengali-font select-none" aria-label="বিয়ের সুর Home Link">
+          বিয়ের সুর
+        </a>
+        <div class="hidden md:flex space-x-8 text-lg font-semibold text-[#3F51B5]">
+          <a href="index.html" class="hover:text-[#B71C1C]" tabindex="0">Home</a>
+          <a href="about.html" class="active text-[#B71C1C]" tabindex="0" aria-current="page">About</a>
+          <a href="pricing.html" class="hover:text-[#B71C1C]" tabindex="0">Pricing</a>
+          <a href="contact.html" class="hover:text-[#B71C1C]" tabindex="0">Contact</a>
+          <a href="studio.html" class="hover:text-[#B71C1C]" tabindex="0">Studio</a>
+          <a href="signup.html" class="hover:text-[#B71C1C]" tabindex="0">Signup</a>
+        </div>
+
+        <!-- Mobile menu button -->
+        <button id="menu-btn" aria-label="Toggle menu" aria-expanded="false" class="md:hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B71C1C]">
+          <svg class="w-8 h-8 text-[#3F51B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24" >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-6 space-y-4 text-[#3F51B5] font-semibold">
+      <a href="index.html" class="block hover:text-[#B71C1C]" tabindex="0">Home</a>
+      <a href="about.html" class="block text-[#B71C1C]" tabindex="0" aria-current="page">About</a>
+      <a href="pricing.html" class="block hover:text-[#B71C1C]" tabindex="0">Pricing</a>
+      <a href="contact.html" class="block hover:text-[#B71C1C]" tabindex="0">Contact</a>
+      <a href="studio.html" class="block hover:text-[#B71C1C]" tabindex="0">Studio</a>
+      <a href="login.html" class="block hover:text-[#B71C1C]" tabindex="0">Login</a>
+    </div>
+  </nav>
+
+  <!-- Introduction Section -->
+  <section class="max-w-6xl mx-auto px-6 py-20 fade-in-up" style="animation-delay: 0.2s;">
+    <h2 class="text-5xl font-extrabold text-[#B71C1C] bengali-font mb-6 select-none text-center">About বিয়ের সুর</h2>
+    <p class="text-lg max-w-4xl mx-auto text-gray-800 leading-relaxed text-center select-text">
+      বিয়ের সুর হল একটি বিশেষ গান সংগ্রহশালা, যা ভারতের বিভিন্ন ভাষায় বিবাহের সঙ্গীতের ভান্ডার নিয়ে গঠিত। 
+      আমরা বিশ্বাস করি সঙ্গীত হল যে সেতু যা সংস্কৃতি, প্রথা, এবং ভালোবাসাকে একত্রিত করে। 
+      আমাদের উদ্দেশ্য হল সব ধরনের ব্যবহারকারীদের জন্য সহজে প্রাপ্য এবং উপভোগ্য গান প্রদান করা — 
+      হয় তা ফ্রি ব্যবহারকারীদের জন্য বা ফটোগ্রাফি ও ভিডিওগ্রাফি স্টুডিও ক্লায়েন্টদের জন্য বিশেষভাবে তৈরি সংগীত।
+    </p>
+  </section>
+
+  <!-- Members Section -->
+  <section class="bg-white py-20 fade-in-up" style="animation-delay: 0.4s;">
+    <div class="max-w-6xl mx-auto px-6">
+      <h3 class="text-4xl font-bold text-[#B71C1C] bengali-font mb-12 text-center select-none">Meet Our Team</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+
+        <!-- Member 1 -->
+        <div class="bg-[#FAF3E0] rounded-lg shadow-lg p-6 flex flex-col items-center text-center select-text">
+          <img 
+            src="images for website/Webdeveloper.jpg" 
+            alt="Ananya Das - Founder & Lead Curator" 
+            class="w-40 h-40 rounded-full object-cover mb-4 shadow-md"
+            loading="lazy"
+          />
+          <h4 class="text-2xl font-semibold text-[#B71C1C] bengali-font mb-1">Saikat Roy</h4>
+          <p class="text-gray-700 italic">Founder & Developer</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-[#B71C1C] text-white py-10 mt-20">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+      <nav class="flex space-x-6 text-lg font-semibold select-none">
+        <a href="index.html" class="hover:text-yellow-300 transition-colors">Home</a>
+        <a href="about.html" class="underline underline-offset-4 decoration-yellow-300">About</a>
+        <a href="pricing.html" class="hover:text-yellow-300 transition-colors">Pricing</a>
+        <a href="contact.html" class="hover:text-yellow-300 transition-colors">Contact</a>
+        <a href="signup.html" class="hover:text-yellow-300 transition-colors">Sign Up</a>
+        <a href="login.html" class="hover:text-yellow-300 transition-colors">Login</a>
+      </nav>
+
+      <div class="text-sm mt-4 md:mt-0 select-none">&copy; 2025 বিয়ের সুর. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+      menuBtn.setAttribute('aria-expanded', !expanded);
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+</body>
+</html>
