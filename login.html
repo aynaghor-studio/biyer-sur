@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | Client Album</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Add Heroicons for Home icon
+    tailwind.config = {
+      plugins: [
+        ({ addComponents }) => {
+          addComponents({
+            '.icon-home': {
+              display: 'inline-block',
+              width: '1.25rem',
+              height: '1.25rem',
+              verticalAlign: 'middle',
+            }
+          });
+        }
+      ]
+    };
+  </script>
+</head>
+<body class="bg-cyan-100 min-h-screen flex items-center justify-center px-4">
+
+  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-gray-800">
+    <h2 class="text-2xl font-bold text-blue-500 mb-6 text-center">Client Login</h2>
+
+    <form id="loginForm" class="space-y-4">
+      <input type="email" id="email" required placeholder="Email"
+             class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <input type="password" id="password" required placeholder="Password"
+             class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <label class="text-sm text-gray-600 flex items-center gap-2">
+        <input type="checkbox" id="showPassword" class="accent-blue-500" />
+        Show Password
+      </label>
+
+      <button type="submit"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded font-semibold transition duration-200">
+        Login
+      </button>
+    </form>
+
+    <p id="errorMsg" class="text-red-500 mt-4 text-center hidden">Invalid email or password. Please try again.</p>
+
+    <!-- Home Button -->
+    <div class="mt-6 text-center">
+      <a href="index.html"
+         class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 9.75L12 3l9 6.75M4.5 10.5V20a.75.75 0 00.75.75h4.5a.75.75 0 00.75-.75v-3.75a.75.75 0 01.75-.75h2.25a.75.75 0 01.75.75V20a.75.75 0 00.75.75h4.5a.75.75 0 00.75-.75v-9.5" />
+        </svg>
+        Back to Home
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const showPassword = document.getElementById('showPassword');
+    const passwordInput = document.getElementById('password');
+
+    showPassword.addEventListener('change', () => {
+      passwordInput.type = showPassword.checked ? 'text' : 'password';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = passwordInput.value.trim();
+
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxdA5S84BCNjI9hF2O2Y6R5MgMXeJUGyO28VHNWPvTFc2ljAXuLiVJIIEJdpOE9nPeC/exec', {
+          method: 'POST',
+          body: new URLSearchParams({ email, password })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          localStorage.setItem('userEmail', result.email);
+          alert("Login successful!");
+          window.location.href = "album.html"; // ✅ Redirect here
+        } else {
+          errorMsg.classList.remove('hidden');
+        }
+
+      } catch (err) {
+        errorMsg.textContent = 'An error occurred. Please try again.';
+        errorMsg.classList.remove('hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

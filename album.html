@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Album Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Animations */
+    .slide-in-up {
+      animation: slideInUp 0.5s ease-out forwards;
+    }
+    .fade-in {
+      animation: fadeIn 0.3s ease-in forwards;
+    }
+    @keyframes slideInUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .lazy {
+      filter: grayscale(80%);
+      transition: filter 0.5s;
+    }
+    .lazy:not([data-src]) {
+      filter: none;
+    }
+  </style>
+</head>
+<body class="bg-cyan-100 text-gray-800 flex flex-col min-h-screen">
+
+  <nav class="bg-gradient-to-r from-teal-700 to-cyan-900 text-white px-6 py-4 text-xl font-semibold">
+    Client Album Viewer
+  </nav>
+
+  <main class="flex-grow p-4 max-w-7xl mx-auto">
+    <h1 class="text-2xl font-semibold text-blue-500 mb-6 text-center">Your Photo Album</h1>
+    <div id="gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+    <p id="message" class="text-center mt-8 text-gray-700"></p>
+  </main>
+
+  <footer class="bg-gray-800 text-white text-center py-4">
+    &copy; 2025 Your Studio Name. All rights reserved.
+  </footer>
+
+  <!-- Fullscreen Overlay -->
+  <div id="fullscreenOverlay" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50">
+    <button id="prevBtn" aria-label="Previous image" class="absolute left-5 top-1/2 -translate-y-1/2 text-white text-4xl hidden md:block hover:text-yellow-400 transition">&#8592;</button>
+    <div class="relative">
+      <img id="fullscreenImg" src="" alt="Full View" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg" />
+      <button id="closeBtn" aria-label="Close fullscreen" class="absolute top-2 right-2 text-white text-3xl bg-gray-800 bg-opacity-60 hover:bg-opacity-80 rounded-full px-3 py-1">
+        &times;
+      </button>
+    </div>
+    <button id="nextBtn" aria-label="Next image" class="absolute right-5 top-1/2 -translate-y-1/2 text-white text-4xl hidden md:block hover:text-yellow-400 transition">&#8594;</button>
+  </div>
+
+  <script>
+    const gallery = document.getElementById('gallery');
+    const overlay = document.getElementById('fullscreenOverlay');
+    const fullscreenImg = document.getElementById('fullscreenImg');
+    const closeBtn = document.getElementById('closeBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const message = document.getElementById('message');
+
+    // Load user data saved by login page
+    const userEmail = localStorage.getItem('userEmail');
+    const preferredDevice = localStorage.getItem('preferredDevice');
+    const isMobile = preferredDevice === 'mobile';
+
+    if (!userEmail) {
+      message.textContent = 'You are not logged in. Please login to view your album.';
+      throw new Error("User not logged in");
+    }
+
+    // Your Apps Script WebApp URL here (replace with your deployment URL)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwFp5P-6ijpimQL5rOqh6I5Cg9cwhVM32DWA1mfvK_pP00BSZYuDOIxIJdqZJezIuBY/exec';
+
+    let images = [];
+    let currentIndex = 0;
+
+    fetch(`${API_URL}?email=${encodeURIComponent(userEmail)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          message.textContent = data.message || 'No album found for this email.';
+          return;
+        }
+        images = data.images || [];
+        if (images.length === 0) {
+          message.textContent = 'No images found in your album.';
+          return;
+        }
+        message.textContent = '';
+        renderGallery();
+      })
+      .catch(() => {
+        message.textContent = 'Error loading album. Please try again later.';
+      });
+
+    function renderGallery() {
+      gallery.innerHTML = '';
+      images.forEach((img, idx) => {
+        const imgEl = document.createElement('img');
+        imgEl.alt = img.name;
+        imgEl.dataset.src = img.url; // Lazy load URL
+        imgEl.className = 'lazy cursor-pointer w-full rounded-lg bg-gray-100 hover:opacity-80 transition';
+        gallery.appendChild(imgEl);
+
+        imgEl.addEventListener('click', () => openFullscreen(idx));
+      });
+
+      // Lazy load images using IntersectionObserver
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                img.classList.remove('lazy');
+                obs.unobserve(img);
+              }
+            }
+          });
+        }, { rootMargin: '200px' });
+        document.querySelectorAll('img.lazy').forEach(img => observer.observe(img));
+      } else {
+        // Fallback: load all images immediately
+        document.querySelectorAll('img.lazy').forEach(img => {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+          img.classList.remove('lazy');
+        });
+      }
+    }
+
+    function openFullscreen(idx) {
+      currentIndex = idx;
+      fullscreenImg.src = images[idx].url;
+      overlay.classList.remove('hidden');
+      fullscreenImg.classList.remove('slide-in-up', 'fade-in');
+      void fullscreenImg.offsetWidth; // Trigger reflow
+      fullscreenImg.classList.add(isMobile ? 'slide-in-up' : 'fade-in');
+
+      if (isMobile) {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+      } else {
+        prevBtn.style.display = 'block';
+        nextBtn.style.display = 'block';
+      }
+    }
+
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.add('hidden');
+    });
+
+    if (isMobile) {
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) overlay.classList.add('hidden');
+      });
+
+      // Swipe gestures for mobile
+      let startX = 0;
+      fullscreenImg.addEventListener('touchstart', e => {
+        startX = e.changedTouches[0].clientX;
+      });
+      fullscreenImg.addEventListener('touchend', e => {
+        const endX = e.changedTouches[0].clientX;
+        if (endX - startX > 50) {
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          openFullscreen(currentIndex);
+        } else if (startX - endX > 50) {
+          currentIndex = (currentIndex + 1) % images.length;
+          openFullscreen(currentIndex);
+        }
+      });
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      openFullscreen(currentIndex);
+    });
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % images.length;
+      openFullscreen(currentIndex);
+    });
+  </script>
+</body>
+</html>
