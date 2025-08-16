@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,20 +7,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .slide-in-up { animation: slideInUp 0.5s ease-out forwards; }
-    .fade-in { animation: fadeIn 0.3s ease-in forwards; }
+    .slide-in-up {
+      animation: slideInUp 0.5s ease-out forwards;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-in forwards;
+    }
+
     @keyframes slideInUp {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
+
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
+
+    @keyframes slideLeft {
+      0% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0%);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideRight {
+      0% {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0%);
+        opacity: 1;
+      }
+    }
+
+    .slide-left {
+      animation: slideLeft 0.4s ease-in-out forwards;
+    }
+
+    .slide-right {
+      animation: slideRight 0.4s ease-in-out forwards;
+    }
+
     .lazy {
       filter: grayscale(80%);
       transition: filter 0.5s;
     }
+
     .lazy:not([data-src]) {
       filter: none;
     }
@@ -61,16 +111,14 @@
     const message = document.getElementById('message');
 
     const userEmail = localStorage.getItem('userEmail');
-    const preferredDevice = localStorage.getItem('preferredDevice');
-    const isMobile = preferredDevice === 'mobile';
+    const isMobile = localStorage.getItem('preferredDevice') === 'mobile';
 
     if (!userEmail) {
       message.textContent = 'You are not logged in. Please login to view your album.';
       throw new Error("User not logged in");
     }
 
-    // Update with your real Apps Script WebApp URL
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwFp5P-6ijpimQL5rOqh6I5Cg9cwhVM32DWA1mfvK_pP00BSZYuDOIxIJdqZJezIuBY/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyR1oDRbXE2JWN2e43wNPu2W7Z-dyZFuIZtLGIsU29qQN9sKeDrje7acZh9Qn96IWIl/exec';
 
     let images = [];
     let currentIndex = 0;
@@ -78,38 +126,30 @@
     fetch(`${API_URL}?email=${encodeURIComponent(userEmail)}`)
       .then(res => res.json())
       .then(data => {
-        console.log('Server response:', data);
         if (!data.success) {
           message.textContent = data.message || 'No album found for this email.';
           return;
         }
-
         images = data.images || [];
-        console.log('Image data received:', images);
-
         if (images.length === 0) {
           message.textContent = 'No images found in your album.';
           return;
         }
-
         message.textContent = '';
         renderGallery();
       })
-      .catch(err => {
-        console.error('Error loading album:', err);
+      .catch(() => {
         message.textContent = 'Error loading album. Please try again later.';
       });
 
     function renderGallery() {
       gallery.innerHTML = '';
       images.forEach((img, idx) => {
-        console.log(`Rendering image: ${img.name}`, img.url);
         const imgEl = document.createElement('img');
         imgEl.alt = img.name;
         imgEl.dataset.src = img.url;
         imgEl.className = 'lazy cursor-pointer w-full rounded-lg bg-gray-100 hover:opacity-80 transition';
         gallery.appendChild(imgEl);
-
         imgEl.addEventListener('click', () => openFullscreen(idx));
       });
 
@@ -140,11 +180,8 @@
 
     function openFullscreen(idx) {
       currentIndex = idx;
-      fullscreenImg.src = images[idx].url;
+      updateFullscreenImage();
       overlay.classList.remove('hidden');
-      fullscreenImg.classList.remove('slide-in-up', 'fade-in');
-      void fullscreenImg.offsetWidth;
-      fullscreenImg.classList.add(isMobile ? 'slide-in-up' : 'fade-in');
 
       if (isMobile) {
         prevBtn.style.display = 'none';
@@ -155,36 +192,64 @@
       }
     }
 
-    closeBtn.addEventListener('click', () => overlay.classList.add('hidden'));
+    function updateFullscreenImage(direction = '') {
+      const imgUrl = images[currentIndex].url;
 
-    if (isMobile) {
-      overlay.addEventListener('click', e => {
-        if (e.target === overlay) overlay.classList.add('hidden');
-      });
+      // Remove existing animations
+      fullscreenImg.classList.remove('fade-in', 'slide-in-up', 'slide-left', 'slide-right');
+      void fullscreenImg.offsetWidth;
 
-      let startX = 0;
-      fullscreenImg.addEventListener('touchstart', e => startX = e.changedTouches[0].clientX);
-      fullscreenImg.addEventListener('touchend', e => {
-        const endX = e.changedTouches[0].clientX;
-        if (endX - startX > 50) {
-          currentIndex = (currentIndex - 1 + images.length) % images.length;
-          openFullscreen(currentIndex);
-        } else if (startX - endX > 50) {
-          currentIndex = (currentIndex + 1) % images.length;
-          openFullscreen(currentIndex);
-        }
-      });
+      // Set animation direction
+      if (isMobile) {
+        fullscreenImg.classList.add(direction === 'left' ? 'slide-left' : 'slide-right');
+      } else {
+        fullscreenImg.classList.add('fade-in');
+      }
+
+      fullscreenImg.src = imgUrl;
     }
 
+    closeBtn.addEventListener('click', () => overlay.classList.add('hidden'));
+
+    // Desktop arrow navigation
     prevBtn.addEventListener('click', () => {
       currentIndex = (currentIndex - 1 + images.length) % images.length;
-      openFullscreen(currentIndex);
+      updateFullscreenImage('right');
     });
 
     nextBtn.addEventListener('click', () => {
       currentIndex = (currentIndex + 1) % images.length;
-      openFullscreen(currentIndex);
+      updateFullscreenImage('left');
     });
+
+    // Mobile swipe gestures
+    if (isMobile) {
+      let startX = 0;
+      fullscreenImg.addEventListener('touchstart', e => {
+        startX = e.changedTouches[0].clientX;
+      });
+
+      fullscreenImg.addEventListener('touchend', e => {
+        const endX = e.changedTouches[0].clientX;
+        const deltaX = endX - startX;
+
+        if (deltaX > 50) {
+          // Swipe right
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          updateFullscreenImage('right');
+        } else if (deltaX < -50) {
+          // Swipe left
+          currentIndex = (currentIndex + 1) % images.length;
+          updateFullscreenImage('left');
+        }
+      });
+
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) {
+          overlay.classList.add('hidden');
+        }
+      });
+    }
   </script>
 </body>
 </html>
