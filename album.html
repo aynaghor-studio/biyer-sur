@@ -6,63 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .slide-in-up {
-      animation: slideInUp 0.5s ease-out forwards;
-    }
-
-    .fade-in {
-      animation: fadeIn 0.3s ease-in forwards;
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     @keyframes slideInUp {
-      from {
-        transform: translateY(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     @keyframes slideLeft {
-      0% {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      100% {
-        transform: translateX(0%);
-        opacity: 1;
-      }
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
     @keyframes slideRight {
-      0% {
-        transform: translateX(-100%);
-        opacity: 0;
-      }
-      100% {
-        transform: translateX(0%);
-        opacity: 1;
-      }
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
-    .slide-left {
-      animation: slideLeft 0.4s ease-in-out forwards;
-    }
-
-    .slide-right {
-      animation: slideRight 0.4s ease-in-out forwards;
-    }
+    .fade-in { animation: fadeIn 0.3s ease-in-out; }
+    .slide-in-up { animation: slideInUp 0.4s ease-out forwards; }
+    .slide-left { animation: slideLeft 0.4s ease-in-out forwards; }
+    .slide-right { animation: slideRight 0.4s ease-in-out forwards; }
 
     .lazy {
       filter: grayscale(80%);
@@ -71,6 +39,24 @@
 
     .lazy:not([data-src]) {
       filter: none;
+    }
+
+    .rotate-landscape {
+      transform: rotate(-180deg);
+    }
+
+    /* Responsive custom close button */
+    #mobileCloseBtn {
+      display: none;
+    }
+
+    @media (max-width: 767px) {
+      #closeBtn {
+        display: none;
+      }
+      #mobileCloseBtn {
+        display: inline-block;
+      }
     }
   </style>
 </head>
@@ -94,8 +80,9 @@
   <div id="fullscreenOverlay" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50">
     <button id="prevBtn" class="absolute left-5 top-1/2 -translate-y-1/2 text-white text-4xl hidden md:block hover:text-yellow-400 transition">&#8592;</button>
     <div class="relative">
-      <img id="fullscreenImg" src="" alt="Full View" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg" />
+      <img id="fullscreenImg" src="" alt="Full View" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg transition-transform duration-300" />
       <button id="closeBtn" class="absolute top-2 right-2 text-white text-3xl bg-gray-800 bg-opacity-60 hover:bg-opacity-80 rounded-full px-3 py-1">&times;</button>
+      <button id="mobileCloseBtn" class="absolute bottom-4 right-4 text-white text-base bg-gray-700 px-4 py-2 rounded hover:bg-gray-600">Close</button>
     </div>
     <button id="nextBtn" class="absolute right-5 top-1/2 -translate-y-1/2 text-white text-4xl hidden md:block hover:text-yellow-400 transition">&#8594;</button>
   </div>
@@ -105,12 +92,12 @@
     const overlay = document.getElementById('fullscreenOverlay');
     const fullscreenImg = document.getElementById('fullscreenImg');
     const closeBtn = document.getElementById('closeBtn');
+    const mobileCloseBtn = document.getElementById('mobileCloseBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const message = document.getElementById('message');
 
     const userEmail = localStorage.getItem('userEmail');
-
     if (!userEmail) {
       message.textContent = 'You are not logged in. Please login to view your album.';
       throw new Error("User not logged in");
@@ -121,9 +108,16 @@
     let images = [];
     let currentIndex = 0;
 
-    // Responsive check
     function isMobile() {
       return window.innerWidth < 768;
+    }
+
+    function isLandscapeMobile() {
+      return isMobile() && window.innerWidth > window.innerHeight;
+    }
+
+    function isPortraitMobile() {
+      return isMobile() && window.innerHeight >= window.innerWidth;
     }
 
     fetch(`${API_URL}?email=${encodeURIComponent(userEmail)}`)
@@ -138,7 +132,6 @@
           message.textContent = 'No images found in your album.';
           return;
         }
-        message.textContent = '';
         renderGallery();
       })
       .catch(() => {
@@ -185,30 +178,23 @@
       currentIndex = idx;
       updateFullscreenImage();
       overlay.classList.remove('hidden');
-
-      if (isMobile()) {
-        prevBtn.style.display = 'none';
-        nextBtn.style.display = 'none';
-      } else {
-        prevBtn.style.display = 'block';
-        nextBtn.style.display = 'block';
-      }
+      prevBtn.style.display = isMobile() ? 'none' : 'block';
+      nextBtn.style.display = isMobile() ? 'none' : 'block';
     }
 
     function updateFullscreenImage(direction = '') {
       const imgUrl = images[currentIndex].url;
 
-      // Remove all animation classes
-      fullscreenImg.classList.remove('fade-in', 'slide-in-up', 'slide-left', 'slide-right');
-      void fullscreenImg.offsetWidth;
+      // Reset rotation & animations
+      fullscreenImg.classList.remove('fade-in', 'slide-in-up', 'slide-left', 'slide-right', 'rotate-landscape');
+      void fullscreenImg.offsetWidth; // Force reflow
 
-      // Add animation based on device and direction
-      if (isMobile()) {
-        if (direction === 'left') {
-          fullscreenImg.classList.add('slide-left');
-        } else if (direction === 'right') {
-          fullscreenImg.classList.add('slide-right');
-        }
+      // Landscape mobile mode: rotate
+      if (isLandscapeMobile()) {
+        fullscreenImg.classList.add('rotate-landscape');
+        fullscreenImg.classList.add(direction === 'left' ? 'slide-left' : 'slide-right');
+      } else if (isPortraitMobile()) {
+        fullscreenImg.classList.add('slide-in-up');
       } else {
         fullscreenImg.classList.add('fade-in');
       }
@@ -216,9 +202,11 @@
       fullscreenImg.src = imgUrl;
     }
 
+    // Close buttons
     closeBtn.addEventListener('click', () => overlay.classList.add('hidden'));
+    mobileCloseBtn.addEventListener('click', () => overlay.classList.add('hidden'));
 
-    // Desktop arrows
+    // Desktop navigation
     prevBtn.addEventListener('click', () => {
       currentIndex = (currentIndex - 1 + images.length) % images.length;
       updateFullscreenImage('right');
@@ -229,7 +217,7 @@
       updateFullscreenImage('left');
     });
 
-    // Mobile swipe gestures
+    // Mobile swipe
     let startX = 0;
     fullscreenImg.addEventListener('touchstart', e => {
       startX = e.changedTouches[0].clientX;
@@ -248,22 +236,19 @@
       }
     });
 
+    // Dismiss on background tap in mobile
     overlay.addEventListener('click', e => {
       if (isMobile() && e.target === overlay) {
         overlay.classList.add('hidden');
       }
     });
 
-    // Handle resize dynamically (optional)
+    // Reapply UI on resize/orientation change
     window.addEventListener('resize', () => {
       if (!overlay.classList.contains('hidden')) {
-        if (isMobile()) {
-          prevBtn.style.display = 'none';
-          nextBtn.style.display = 'none';
-        } else {
-          prevBtn.style.display = 'block';
-          nextBtn.style.display = 'block';
-        }
+        updateFullscreenImage();
+        prevBtn.style.display = isMobile() ? 'none' : 'block';
+        nextBtn.style.display = isMobile() ? 'none' : 'block';
       }
     });
   </script>
