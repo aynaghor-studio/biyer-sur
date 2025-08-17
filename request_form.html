@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lost Video Request | আয়না ঘর Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-cyan-100 text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-teal-700 to-cyan-900 p-4 shadow-md">
+    <div class="max-w-6xl mx-auto flex justify-between items-center text-white">
+      <div class="text-xl font-bold">আয়না ঘর Studio</div>
+      <div class="space-x-4 text-sm md:text-base">
+        <a href="../../index.html" class="hover:text-yellow-400 transition">Home</a>
+        <a href="../../about.html" class="hover:text-yellow-400 transition">About Us</a>
+        <a href="../../wedding.html" class="hover:text-yellow-400 transition">Weding</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Form Section -->
+  <section id="form" class="max-w-2xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-semibold text-blue-500 mb-6">Lost Video Request Form</h2>
+    <form id="requestForm">
+      <div class="space-y-5">
+        <input type="text" name="name" placeholder="Your Name" required class="w-full p-3 bg-gray-50 rounded border border-gray-200">
+
+        <input type="email" name="email" placeholder="Email Address" required class="w-full p-3 bg-gray-50 rounded border border-gray-200">
+
+        <input type="tel" name="phone" placeholder="Phone Number" required class="w-full p-3 bg-gray-50 rounded border border-gray-200">
+
+        <!-- Event Type -->
+        <div>
+          <label class="block mb-1 font-medium">Event Type</label>
+          <select name="eventType" id="eventType" required class="w-full p-3 bg-gray-50 rounded border border-gray-200">
+            <option value="">-- Select Event Type --</option>
+            <option value="Bengali wedding">Bengali wedding</option>
+            <option value="Muslim Nikah">Muslim Nikah</option>
+            <option value="Pre - wedding">Pre - wedding</option>
+            <option value="First Rice Ceremony">First Rice Ceremony</option>
+          </select>
+        </div>
+
+        <!-- Conditional Fields -->
+        <div id="conditionalFields" class="space-y-3"></div>
+
+        <!-- Lost Reason -->
+        <textarea name="reason" rows="4" placeholder="Video Lost Reason" required class="w-full p-3 bg-gray-50 rounded border border-gray-200"></textarea>
+
+        <!-- Declaration -->
+        <label class="flex items-center space-x-2 text-sm">
+          <input type="checkbox" name="isClient" required class="form-checkbox">
+          <span>I am already a client of আয়না ঘর Studio</span>
+        </label>
+
+        <!-- Submit -->
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded transition">
+          Submit Request
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- About & Contact -->
+  <section id="about" class="max-w-3xl mx-auto mt-16 px-6">
+    <h3 class="text-xl font-semibold text-blue-500 mb-2">About আয়না ঘর Studio</h3>
+    <p class="text-gray-700">
+      আয়না ঘর Studio is dedicated to capturing timeless memories through cinematic wedding storytelling, vibrant cultural events, and memorable celebrations. Our goal is to preserve your moments — beautifully.
+    </p>
+  </section>
+
+  <section id="contact" class="max-w-3xl mx-auto mt-10 mb-20 px-6">
+    <h3 class="text-xl font-semibold text-blue-500 mb-2">Contact</h3>
+    <p class="text-gray-700">📧 Email: aynaghor0@gmail.com<br>📞 Phone: +91-6295316531</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white text-center py-5 mt-10">
+    © 2025 আয়না ঘর Studio. All rights reserved.
+  </footer>
+
+  <!-- Script -->
+  <script>
+  const form = document.getElementById('requestForm');
+  const eventType = document.getElementById('eventType');
+  const conditionalFields = document.getElementById('conditionalFields');
+
+  eventType.addEventListener('change', () => {
+    const val = eventType.value;
+    conditionalFields.innerHTML = '';
+
+    if (['Bengali wedding', 'Muslim Nikah'].includes(val)) {
+      conditionalFields.innerHTML = `
+        <input name="brideGroom" placeholder="Bride/Groom Name" required class="w-full p-3 bg-gray-50 rounded border border-gray-200">
+      `;
+    } else if (val === 'First Rice Ceremony') {
+      conditionalFields.innerHTML = `
+        <input name="childName" placeholder="Child Name" required class="w-full p-3 bg-gray-50 rounded border border-gray-200">
+      `;
+    } else if (val === 'Pre - wedding') {
+      conditionalFields.innerHTML = `
+        <input name="coupleName" placeholder="Couple Name" required class="w-full p-3 bg-gray-50 rounded border border-gray-200">
+      `;
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    try {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbzY8KuXuCwSoSCUs7NBKla4f13hRcTAp2i85kAVQ5fkwN62gCjbXR1Lcr7QqgjwfNxz/exec', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        alert('✅ Form submitted! We will email you the video link after verification.');
+        form.reset();
+        conditionalFields.innerHTML = '';
+      } else {
+        alert('❌ Submission failed. Try again later.');
+      }
+    } catch (error) {
+      alert('🚨 Network error. Please check your internet or try again later.');
+    }
+  });
+</script>
+</body>
+</html>
