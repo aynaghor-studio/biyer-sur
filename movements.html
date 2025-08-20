@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#FFF5E1] text-[#3E2723]">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movements - Uttar Bangla Loko Sanskriti</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-up {
+      animation: fade-up 0.8s ease-out forwards;
+    }
+    .transition-opacity {
+      transition: opacity 0.5s ease-in-out;
+    }
+  </style>
+
+  <!-- Favicon (optional) -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  
+</head>
+<body class="font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-[#800000] text-white px-6 py-4 flex justify-between items-center">
+    <div class="text-2xl font-bold">Uttar Bangla Loko Sanskriti</div>
+    <div class="space-x-4">
+      <a href="index-en.html" class="hover:underline">Home</a>
+      <a href="about.html" class="hover:underline">About</a>
+      <a href="events.html" class="hover:underline">Event</a>
+      <a href="movements.html" class="underline font-semibold">Gallery</a>
+      <a href="contact.html" class="hover:underline">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Movement Message -->
+  <section class="p-6 text-center bg-[#FFF5E1] animate-fade-up">
+    <h1 class="text-3xl font-semibold mb-4">Our Cultural Movements</h1>
+    <p class="mb-4 max-w-3xl mx-auto">
+      We <strong>Uttar Bangla Loko Sanskriti</strong> have captured some moments of our movement in preserving the cultural activity of North Bengal Rajbanshi Culture. We think you can also be a part of our movement. Join with us.
+    </p>
+    <button onclick="document.getElementById('joinModal').classList.remove('hidden')"
+            class="bg-[#800000] hover:bg-[#a00000] text-white px-6 py-2 rounded">
+      Join Us
+    </button>
+  </section>
+
+  <!-- Join Modal -->
+  <!-- Join Modal -->
+<div id="joinModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-white text-[#3E2723] p-6 rounded-lg w-full max-w-md relative animate-fade-up shadow-lg">
+    <!-- Close Button -->
+    <button class="absolute top-2 right-4 text-xl font-bold" onclick="document.getElementById('joinModal').classList.add('hidden')">×</button>
+
+    <!-- Form Title -->
+    <h2 class="text-2xl font-bold mb-4 text-center">Join Us</h2>
+
+    <!-- Form Start -->
+    <form class="space-y-4" id="joinForm">
+      <input type="text" name="fullName" placeholder="Name" class="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#800000]" required>
+      
+      <input type="email" name="email" placeholder="Email" class="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#800000]" required>
+      
+      <input type="tel" name="phone" placeholder="Phone" class="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#800000]" required>
+
+      <div>
+        <label class="block font-medium mb-1">Artist Type:</label>
+        <div class="space-y-2">
+          <label><input type="radio" name="artistCategory" value="Singer" class="mr-2">Singer</label><br>
+          <label><input type="radio" name="artistCategory" value="Dancer" class="mr-2">Dancer</label><br>
+          <label><input type="radio" name="artistCategory" value="Drama Artist" class="mr-2">Drama Artist</label><br>
+          <label>
+            <input type="radio" name="artistCategory" value="other" class="mr-2" id="otherRadio">Other - Please specify
+          </label>
+          <input type="text" name="otherArtistType" id="otherArtistInput" placeholder="Enter your artist type"
+                 class="w-full border px-3 py-2 rounded mt-2 hidden focus:outline-none focus:ring-2 focus:ring-[#800000]">
+        </div>
+      </div>
+
+      <input type="text" name="address" placeholder="Address" class="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#800000]">
+      <input type="text" name="city" placeholder="City" class="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#800000]">
+      <input type="text" name="district" placeholder="District" class="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#800000]">
+      <input type="text" name="pincode" placeholder="Pincode (optional)" class="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#800000]">
+
+      <label class="block">
+        <input type="checkbox" name="agree" required class="mr-2">
+        I agree to join with Uttar Bangla Loko Sanskriti and be a part of preserving the Rajbanshi cultural activity.
+      </label>
+
+      <button type="submit" class="w-full bg-[#800000] hover:bg-[#a00000] text-white px-4 py-2 rounded font-semibold">
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-white text-[#3E2723] p-6 rounded-lg max-w-sm w-full text-center animate-fade-up shadow-xl">
+    <h3 class="text-2xl font-bold mb-4">🎉 Thank You!</h3>
+    <p class="mb-4">Your submission has been received.<br>We’ll get back to you soon.</p>
+    <button onclick="closeSuccessModal()" class="bg-[#800000] text-white px-4 py-2 rounded hover:bg-[#a00000]">
+      Close
+    </button>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  const otherRadio = document.getElementById("otherRadio");
+  const otherInput = document.getElementById("otherArtistInput");
+
+  // Toggle visibility of 'Other' input
+  document.querySelectorAll('input[name="artistCategory"]').forEach((radio) => {
+    radio.addEventListener("change", function () {
+      if (this.value === "other") {
+        otherInput.classList.remove("hidden");
+        otherInput.required = true;
+      } else {
+        otherInput.classList.add("hidden");
+        otherInput.required = false;
+        otherInput.value = "";
+      }
+    });
+  });
+
+  const form = document.getElementById("joinForm");
+  const successModal = document.getElementById("successModal");
+  const joinModal = document.getElementById("joinModal");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbyMKXdkBjteDGZQaqaTF7pYeyvFtG6cr0PZj7lU_MHXb1UPNdqtw7KjkMqby6St2JJf/exec", {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.ok) {
+        form.reset();
+        otherInput.classList.add("hidden");
+        joinModal.classList.add("hidden");
+        successModal.classList.remove("hidden");
+      } else {
+        alert("Submission failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again later.");
+    }
+  });
+
+  function closeSuccessModal() {
+    successModal.classList.add("hidden");
+  }
+</script>
+
+
+  <!-- Gallery Section -->
+  <section class="p-6 animate-fade-up">
+    <h2 class="text-2xl font-semibold mb-4 text-center">Movement Moments Gallery</h2>
+    <div id="galleryContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <!-- Images inserted here via JS -->
+    </div>
+  </section>
+
+  <!-- Fullscreen Viewer -->
+  <div id="fullscreenViewer" class="fixed inset-0 bg-black bg-opacity-90 hidden z-50 flex items-center justify-center text-white">
+    <div class="relative w-full max-w-4xl px-4">
+      <div class="bg-white text-[#3E2723] p-4 rounded shadow-lg flex flex-col items-center animate-fade-up">
+        <img id="fullImage" src="" alt="Fullscreen" class="rounded shadow max-h-[70vh] w-auto transition-opacity opacity-0">
+        <p id="fullDesc" class="mt-4 font-medium text-center"></p>
+        <div class="mt-4 flex space-x-4">
+          <button onclick="prevImage()" class="bg-[#FFDB58] text-[#800000] px-4 py-2 rounded">Previous</button>
+          <button onclick="closeFullscreen()" class="bg-[#800000] text-white px-4 py-2 rounded">Close</button>
+          <button onclick="nextImage()" class="bg-[#FFDB58] text-[#800000] px-4 py-2 rounded">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-[#800000] text-white p-6 mt-8">
+    <div class="flex justify-between items-center flex-col md:flex-row">
+      <div class="text-lg font-semibold">Uttar Bangla Loko Sanskriti</div>
+      <div class="space-x-4 mt-2 md:mt-0">
+        <a href="index-en.html" class="hover:underline">Home</a>
+        <a href="about.html" class="hover:underline">About</a>
+        <a href="movements.html" class="hover:underline">Gallery</a>
+        <a href="contact.html" class="hover:underline">Contact</a>
+      </div>
+    </div>
+    <div class="text-center mt-4">&copy; 2025 Uttar Bangla Loko Sanskriti. All rights reserved.</div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    const images = [
+      {
+        src: 'images/gallery/20201106_162432.jpg',
+        thumb: 'images/gallery/20201106_162432.jpg',
+        desc: 'Dance Shooting : কদম ডালে বাজায় বাঁশি'
+      },
+      {
+        src: 'images/gallery/20201201_131703.jpg',
+        thumb: 'images/gallery/20201201_131703.jpg',
+        desc: 'Dance Shooting : Monero Hause'
+      },
+      {
+        src: 'images/gallery/Image 2.jpg',
+        thumb: 'images/gallery/Image 2.jpg',
+        desc: 'Dance Perfomance : Hanthe Sankha Curi〡Nagpuri Song'
+      },
+      {
+        src: 'images/gallery/Image 3.jpg',
+        thumb: 'images/gallery/Image 3.jpg',
+        desc: 'Main team of UlS Channel'
+      },
+      {
+        src: 'images/gallery/IMG_0672.JPG',
+        thumb: 'images/gallery/IMG_0672.JPG',
+        desc: 'Shooting : Dipali Roy , Puja Roy Patowary , Ranjana Roy - Song'
+      },
+      {
+        src: 'images/gallery/IMG_1212.JPG',
+        thumb: 'images/gallery/IMG_1212.JPG',
+        desc: 'Shooting : Jasobala Roy Manosikha - Song'
+      },
+      {
+        src: 'images/gallery/IMG_1217.JPG',
+        thumb: 'images/gallery/IMG_1217.JPG',
+        desc: 'Shooting : Jasobala Roy , Krishna Roy - Monosikha Song'
+      },
+      {
+        src: 'images/gallery/IMG_1869.JPG',
+        thumb: 'images/gallery/IMG_1869.JPG',
+        desc: 'Shooting : হাস্যকর নাটক - পেচকেটার সংসার, ঘরের লক্ষী অবতারপর্ব- ২'
+      },
+      {
+        src: 'images/gallery/IMG_2500.JPG',
+        thumb: 'images/gallery/IMG_2500.JPG',
+        desc: 'Shooting : Sabita Deb Adhikary & Sapna Roy - Song'
+      },
+      {
+        src: 'images/gallery/IMG_2534.JPG',
+        thumb: 'images/gallery/IMG_2534.JPG',
+        desc: 'Shooting : Nandita Roy , Amit Roy , Argha Roy , Babita Roy , Subhankar Roy - Song'
+      },
+      {
+        src: 'images/gallery/IMG_4402.JPG',
+        thumb: 'images/gallery/IMG_4402.JPG',
+        desc: 'Shooting : Monosikha Song - Brajen Roy , Dilip Roy , Sandharani Roy , Bapon Roy & Choritro Roy'
+      }
+    ];
+
+    const gallery = document.getElementById('galleryContainer');
+    images.forEach((img, index) => {
+      const card = document.createElement('div');
+      card.className = 'cursor-pointer animate-fade-up';
+      card.innerHTML = `
+        <img src="${img.thumb}" class="rounded shadow" alt="Gallery Image ${index}">
+        <p class="mt-2 text-center font-medium">${img.desc}</p>
+      `;
+      card.onclick = () => openFullscreen(index);
+      gallery.appendChild(card);
+    });
+
+    let currentImage = 0;
+
+    function showImage(index) {
+      const img = document.getElementById('fullImage');
+      const desc = document.getElementById('fullDesc');
+      img.classList.add('opacity-0');
+
+      setTimeout(() => {
+        img.src = images[index].src;
+        desc.innerText = images[index].desc;
+        img.onload = () => img.classList.remove('opacity-0');
+      }, 300);
+    }
+
+    function openFullscreen(index) {
+      currentImage = index;
+      document.getElementById('fullscreenViewer').classList.remove('hidden');
+      showImage(currentImage);
+    }
+
+    function closeFullscreen() {
+      document.getElementById('fullscreenViewer').classList.add('hidden');
+    }
+
+    function nextImage() {
+      currentImage = (currentImage + 1) % images.length;
+      showImage(currentImage);
+    }
+
+    function prevImage() {
+      currentImage = (currentImage - 1 + images.length) % images.length;
+      showImage(currentImage);
+    }
+  </script>
+
+</body>
+</html>
