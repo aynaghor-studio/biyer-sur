@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>আয়না ঘর Studio - Song Distribution</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- AOS for reveal animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .modal {
+      background: rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-cyan-100 text-gray-800" onload="AOS.init()">
+
+<!-- Navbar -->
+<nav class="bg-gradient-to-r from-teal-700 to-cyan-900 text-white shadow-md py-4">
+  <div class="container mx-auto px-4 flex justify-between items-center">
+    <button onclick="history.back()" class="text-yellow-400 hover:text-white">← Back</button>
+    <h1 class="text-xl font-bold">আয়না ঘর Studio</h1>
+    <div></div>
+  </div>
+</nav>
+
+<!-- Banner -->
+<section class="relative h-[500px] bg-cover bg-center flex items-center justify-center text-white text-center"
+         style="background-image: url('images for website/Distrubution/Banner Music.jpg');">
+  <div class="bg-black bg-opacity-50 p-8 rounded-lg shadow-lg" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-4">Song Distribution & Content ID Services</h2>
+    <p class="text-lg">Powered by আয়না ঘর Studio – Get your music heard worldwide</p>
+  </div>
+</section>
+
+<!-- Form Section -->
+<section class="container mx-auto px-4 py-10">
+  <div class="text-center mb-6" data-aos="fade-up">
+    <button onclick="toggleForm()" class="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600">
+      Open Artist Registration Form
+    </button>
+  </div>
+
+  <!-- Artist Form -->
+  <div id="artistForm" class="hidden bg-white p-6 rounded shadow-md space-y-4 animate-fade-in" data-aos="fade-up">
+    <form id="submissionForm">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" name="name" placeholder="Name" required class="border p-2 rounded"/>
+        <input type="email" name="email" placeholder="Email" required class="border p-2 rounded"/>
+        <input type="tel" name="phone" placeholder="Phone" required class="border p-2 rounded"/>
+        <input type="text" name="address" placeholder="Address" required class="border p-2 rounded"/>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+        <input type="url" name="youtube" placeholder="YouTube Channel" class="border p-2 rounded"/>
+        <input type="url" name="facebook" placeholder="Facebook Page" class="border p-2 rounded"/>
+        <input type="url" name="whatsapp" placeholder="WhatsApp Channel" class="border p-2 rounded"/>
+        <input type="url" name="instagram" placeholder="Instagram" class="border p-2 rounded"/>
+        <input type="url" name="behance" placeholder="Behance" class="border p-2 rounded"/>
+        <input type="url" name="artstation" placeholder="ArtStation" class="border p-2 rounded"/>
+      </div>
+
+      <label class="block font-semibold mt-4">Upload Portrait Image:</label>
+      <input type="file" name="image" accept="image/*" required class="mt-2"/>
+
+      <label class="block mt-4">
+        <input type="checkbox" required/> I agree to the Terms & Conditions
+      </label>
+
+      <button type="submit" class="mt-4 bg-teal-700 text-white px-6 py-2 rounded hover:bg-teal-800">
+        Submit & Preview
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="fixed inset-0 hidden items-center justify-center modal z-50 px-4">
+  <div class="bg-white p-6 rounded shadow-lg w-full max-w-lg relative">
+    <button onclick="closeModal()" class="absolute top-2 right-2 text-red-600 font-bold text-2xl z-10">&times;</button>
+    <h3 class="text-2xl text-blue-500 font-bold text-center mb-4">Preview Information</h3>
+    <img id="previewImage" class="w-32 h-32 mx-auto rounded-full border mb-4 object-cover"/>
+    <div id="previewContent" class="text-sm space-y-2 px-2"></div>
+    <div class="text-center mt-4 space-x-3">
+      <button onclick="downloadPDF()" class="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500">
+        Download PDF
+      </button>
+      <button onclick="finalSubmit()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        Finalize & Submit
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Partners Section -->
+<section class="bg-gray-50 py-10" data-aos="fade-up">
+  <h3 class="text-center text-2xl font-bold text-blue-500 mb-6">Our Distribution Partners</h3>
+  <div class="grid grid-cols-3 md:grid-cols-6 gap-6 items-center justify-center px-4">
+    <img src="https://www.gstatic.com/youtube/img/branding/youtubelogo/svg/youtubelogo.svg" class="h-8 mx-auto"/>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" class="h-8 mx-auto"/>
+    <img src="https://www.saavn.com/corp/static/media/logo.6b8e5f5d.svg" class="h-8 mx-auto"/>
+    <img src="https://www.apple.com/v/apple-music/c/images/overview/icon_music_large_2x.png" class="h-8 mx-auto"/>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/Amazon_Music_logo.svg" class="h-8 mx-auto"/>
+    <img src="https://cdn.worldvectorlogo.com/logos/deezer-1.svg" class="h-8 mx-auto"/>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white text-center py-6 mt-10">
+  <p>&copy; 2025 আয়না ঘর Studio. All rights reserved.</p>
+</footer>
+
+<script>
+  const { jsPDF } = window.jspdf;
+
+  function toggleForm() {
+    document.getElementById("artistForm").classList.toggle("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("previewModal").classList.add("hidden");
+  }
+
+  let formDataGlobal = {};
+  let imageBase64 = '';
+
+  document.getElementById("submissionForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    formDataGlobal = Object.fromEntries(formData.entries());
+
+    const image = formData.get("image");
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      imageBase64 = event.target.result;
+      document.getElementById("previewImage").src = imageBase64;
+      showPreview(formDataGlobal);
+    };
+    reader.readAsDataURL(image);
+  });
+
+  function showPreview(data) {
+    const container = document.getElementById("previewContent");
+    container.innerHTML = '';
+    for (let key in data) {
+      if (data[key] && key !== 'image') {
+        container.innerHTML += `<p><strong>${key}:</strong> ${data[key]}</p>`;
+      }
+    }
+    document.getElementById("previewModal").classList.remove("hidden");
+  }
+
+  function downloadPDF() {
+  const doc = new jsPDF('portrait', 'pt', 'a4');
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  let y = 80;
+  const margin = 40;
+
+  // Colors
+  const headerFooterColor = '#164e63';  // Dark teal
+  const textColor = '#225e6b';          // Dark tealish text
+
+  // Draw Header
+  doc.setFillColor(headerFooterColor);
+  doc.rect(0, 0, pageWidth, 50, 'F');
+  doc.setTextColor('#FFFFFF');
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Artist Registration Form', pageWidth / 2, 35, { align: 'center' });
+
+  // Prepare and crop image to 1080x1350 ratio (4:5 aspect ratio)
+  if (imageBase64) {
+    const img = new Image();
+    img.src = imageBase64;
+
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      const targetRatio = 1080 / 1350;
+
+      const iw = img.width;
+      const ih = img.height;
+      const imageRatio = iw / ih;
+
+      let sx, sy, sw, sh;
+
+      if (imageRatio > targetRatio) {
+        sh = ih;
+        sw = ih * targetRatio;
+        sx = (iw - sw) / 2;
+        sy = 0;
+      } else {
+        sw = iw;
+        sh = iw / targetRatio;
+        sx = 0;
+        sy = (ih - sh) / 2;
+      }
+
+      canvas.width = sw;
+      canvas.height = sh;
+
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      const croppedDataUrl = canvas.toDataURL('image/jpeg');
+
+      const imgWidth = 180;
+      const imgHeight = 225;
+      const imgX = (pageWidth - imgWidth) / 2;
+
+      doc.addImage(croppedDataUrl, 'JPEG', imgX, y, imgWidth, imgHeight);
+
+      y += imgHeight + 30;
+
+      doc.setFontSize(12);
+      doc.setTextColor(textColor);
+      doc.setFont('helvetica', 'normal');
+
+      for (let key in formDataGlobal) {
+        if (formDataGlobal[key] && key !== 'image') {
+          const textLine = `${capitalize(key)}: ${formDataGlobal[key]}`;
+          doc.text(textLine, margin, y);
+          y += 25;
+
+          if (y > pageHeight - 60) {
+            doc.addPage();
+            y = 60;
+          }
+        }
+      }
+
+      // Draw Footer with Logo only (no text)
+      doc.setFillColor(headerFooterColor);
+      doc.rect(0, pageHeight - 50, pageWidth, 50, 'F');
+
+      const logoWidth = 40;
+      const logoHeight = 40;
+      const logoX = (pageWidth - logoWidth) / 2;
+      const logoY = pageHeight - 45;
+
+      // Load your studio logo (replace this with your actual logo URL or base64)
+      const logoImg = new Image();
+      logoImg.src = 'https://aynaghor-studio.github.io/cdn_images/images/logo.png';  // Replace this!
+
+      logoImg.onload = () => {
+        doc.addImage(logoImg, 'PNG', logoX, logoY, logoWidth, logoHeight);
+        doc.save('Artist_Registration_Form.pdf');
+      };
+
+      // Fallback if image fails to load after 1 second
+      setTimeout(() => {
+        doc.save('Registration-Form.pdf');
+      }, 1000);
+    };
+  } else {
+    // No image case
+
+    doc.setFontSize(12);
+    doc.setTextColor(textColor);
+    doc.setFont('helvetica', 'normal');
+
+    for (let key in formDataGlobal) {
+      if (formDataGlobal[key] && key !== 'image') {
+        const textLine = `${capitalize(key)}: ${formDataGlobal[key]}`;
+        doc.text(textLine, margin, y);
+        y += 25;
+
+        if (y > pageHeight - 60) {
+          doc.addPage();
+          y = 60;
+        }
+      }
+    }
+
+    // Footer with Logo only (no text)
+    doc.setFillColor(headerFooterColor);
+    doc.rect(0, pageHeight - 50, pageWidth, 50, 'F');
+
+    const logoWidth = 40;
+    const logoHeight = 40;
+    const logoX = (pageWidth - logoWidth) / 2;
+    const logoY = pageHeight - 45;
+
+    const logoImg = new Image();
+    logoImg.src = 'https://aynaghor-studio.github.io/cdn_images/images/logo.png';  // Replace this!
+
+    logoImg.onload = () => {
+      doc.addImage(logoImg, 'PNG', logoX, logoY, logoWidth, logoHeight);
+      doc.save('Artist_Registration_Form.pdf');
+    };
+
+    setTimeout(() => {
+      doc.save('Artist_Registration_Form.pdf');
+    }, 1000);
+  }
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+
+  async function finalSubmit() {
+    const payload = {
+      ...formDataGlobal,
+      imageBase64
+    };
+
+    try {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbwvquT-tPH0Vn5c0en3XbeI-RnbymgXtqMXvGeSAAgGz0ruWfBW8uK6CcNBiraDnmyTxw/exec", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      const json = await res.json();
+      if (json.status === "success") {
+        alert("Submitted successfully! Check your email for login credentials after verification.");
+        closeModal();
+        document.getElementById("submissionForm").reset();
+      } else {
+        alert("Error: " + json.message);
+      }
+    } catch (err) {
+      alert("Failed to submit form.");
+    }
+  }
+</script>
+</body>
+</html>
